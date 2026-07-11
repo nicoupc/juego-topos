@@ -130,7 +130,7 @@
   
   let playerName = localStorage.getItem("toposyerizos-playername") || "Jugador Anónimo";
   let playerAvatar = localStorage.getItem("toposyerizos-playeravatar") || "mole";
-  const AVATAR_LIST = ["mole", "erizo", "helmet_mole", "disguise_mole"];
+  const AVATAR_LIST = ["mole", "erizo", "helmet_mole", "disguise_mole", "bucket_mole", "fork_mole", "zombie_mole"];
   let selectedAvatarIndex = AVATAR_LIST.indexOf(playerAvatar);
   if (selectedAvatarIndex === -1) selectedAvatarIndex = 0;
   
@@ -1006,6 +1006,9 @@
     if (kind === "erizo") return getErizoSVG();
     if (kind === "helmet_mole") return getHelmetMoleSVG({ hp: 2 });
     if (kind === "disguise_mole") return getDisguisedMoleSVG();
+    if (kind === "bucket_mole") return getBucketMoleSVG({ hp: 3 });
+    if (kind === "fork_mole") return getForkMoleSVG({ forkUp: true });
+    if (kind === "zombie_mole") return getZombieMoleSVG({ hp: 5 });
     return getMoleSVG("normal", "normal");
   }
 
@@ -1037,7 +1040,7 @@
         if (entries.length === 0) {
           leaderboardList.innerHTML = `<div class="leaderboard-empty">Sin puntajes globales aún</div>`;
         } else {
-          const limit = Math.min(entries.length, 10);
+          const limit = Math.min(entries.length, 50);
           for (let i = 0; i < limit; i++) {
             const entry = entries[i];
             const namePart = entry.name;
@@ -1113,7 +1116,7 @@
       
       // 3. Sort and slice
       scoresList.sort((a, b) => b.score - a.score);
-      const topScores = scoresList.slice(0, 10);
+      const topScores = scoresList.slice(0, 50);
       
       // 4. Save back
       await fetch(LEADERBOARD_BIN_URL, {
@@ -1187,7 +1190,7 @@
         
         // 4. Sort and save
         scoresList.sort((a, b) => b.score - a.score);
-        const topScores = scoresList.slice(0, 10);
+        const topScores = scoresList.slice(0, 50);
         
         await fetch(LEADERBOARD_BIN_URL, {
           method: "POST",
