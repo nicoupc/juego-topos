@@ -1364,7 +1364,7 @@ body {
   left: 20px;
   top: 20px;
   z-index: 100;
-  width: 300px;
+  width: 340px;
   background: #f8edd1;
   border: 6px solid var(--wood-dark) !important;
   border-radius: 18px;
@@ -1372,7 +1372,7 @@ body {
     0 8px 0 var(--wood-dark), 
     0 12px 20px rgba(0,0,0,0.4), 
     inset 0 0 15px rgba(0,0,0,0.15);
-  padding: 12px 14px;
+  padding: 14px 16px;
   box-sizing: border-box;
   font-family: 'Fredoka', sans-serif;
   color: #4a2d18;
@@ -1380,7 +1380,7 @@ body {
 }
 
 .floating-profile-badge .profile-badge-title {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 900;
   color: #734222;
   text-transform: uppercase;
@@ -1395,17 +1395,17 @@ body {
 .floating-profile-badge .profile-view-mode {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   position: relative;
   width: 100%;
 }
 
 .floating-profile-badge .profile-avatar-badge {
-  width: 64px;
-  height: 64px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   background: #fff;
-  border: 3px solid var(--wood-dark);
+  border: 3.5px solid var(--wood-dark);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1426,13 +1426,13 @@ body {
 }
 
 .floating-profile-badge .profile-name {
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   font-weight: 900;
   color: #4a2d18;
 }
 
 .floating-profile-badge .profile-highscore {
-  font-size: 0.82rem;
+  font-size: 0.9rem;
   color: #7d441c;
   font-weight: 600;
 }
@@ -1440,7 +1440,7 @@ body {
 .floating-profile-badge .edit-profile-btn {
   background: none;
   border: none;
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   cursor: pointer;
   padding: 4px;
   transition: transform 0.15s ease;
@@ -1468,13 +1468,13 @@ body {
 .floating-profile-badge .profile-input {
   flex-grow: 1;
   min-width: 0;
-  width: 140px; /* fixed width prevents flexbox layout stretching */
+  width: 170px; /* wider edit input for name */
   box-sizing: border-box;
   border: 2.5px solid var(--wood-medium);
   border-radius: 8px;
-  padding: 6px 8px;
+  padding: 6px 10px;
   font-family: 'Fredoka', sans-serif;
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   color: #4a2d18;
   outline: none;
   background: #fff;
@@ -1503,7 +1503,7 @@ body {
   right: 20px;
   top: 20px;
   z-index: 100;
-  width: 300px;
+  width: 340px;
   background: #f8edd1;
   border: 6px solid var(--wood-dark);
   border-radius: 18px;
@@ -1511,7 +1511,7 @@ body {
     0 8px 0 var(--wood-dark), 
     0 12px 20px rgba(0,0,0,0.4), 
     inset 0 0 15px rgba(0,0,0,0.15);
-  padding: 12px 14px;
+  padding: 14px 16px;
   box-sizing: border-box;
   font-family: 'Fredoka', sans-serif;
   color: #4a2d18;
@@ -1566,7 +1566,7 @@ body {
   flex-direction: column;
   gap: 6px;
   margin-top: 6px;
-  max-height: 240px; /* displays ~5 rows */
+  max-height: 290px; /* displays ~5 rows smoothly */
   overflow-y: scroll;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE 10+ */
@@ -1579,54 +1579,99 @@ body {
 
 /* Podium Top 3 GLORY Styles */
 .leaderboard-row.rank-1 {
-  background: linear-gradient(135deg, #fff2cc 0%, #ffd966 50%, #f1c232 100%) !important;
-  border: 2.5px solid #bf9000 !important;
-  box-shadow: 0 0 10px rgba(241, 194, 50, 0.7);
+  background: linear-gradient(135deg, #fff8cc 0%, #ffe066 50%, #ffd700 100%) !important;
+  border: 3px solid #d4af37 !important;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.8) !important;
   animation: goldGlow 2s ease-in-out infinite alternate;
+  padding: 10px 12px;
 }
 
 @keyframes goldGlow {
-  0% { box-shadow: 0 0 4px rgba(241, 194, 50, 0.4); }
-  100% { box-shadow: 0 0 12px rgba(241, 194, 50, 0.85); }
+  0% { box-shadow: 0 0 6px rgba(255, 215, 0, 0.5); }
+  100% { box-shadow: 0 0 18px rgba(255, 215, 0, 0.95); }
 }
 
 .leaderboard-row.rank-1 .leaderboard-rank {
-  font-size: 1.35rem !important;
+  font-size: 1.4rem !important;
   text-shadow: 0 2px 4px rgba(0,0,0,0.25);
   font-weight: 900 !important;
 }
 
+.leaderboard-row.rank-1 .leaderboard-player-avatar {
+  width: 38px;
+  height: 38px;
+  border: 2.5px solid #d4af37;
+}
+
 .leaderboard-row.rank-1 .leaderboard-player-name {
+  font-size: 1.05rem;
   font-weight: 900 !important;
   color: #3d2300 !important;
 }
 
 .leaderboard-row.rank-1 .leaderboard-player-name::after {
   content: " 👑";
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   vertical-align: middle;
 }
 
+.leaderboard-row.rank-1 .leaderboard-score {
+  font-size: 1.1rem;
+  color: #3d2300;
+}
+
 .leaderboard-row.rank-2 {
-  background: linear-gradient(135deg, #f3f3f3 0%, #d9d9d9 50%, #b7b7b7 100%) !important;
-  border: 2.5px solid #7f7f7f !important;
-  box-shadow: 0 0 6px rgba(183, 183, 183, 0.45);
+  background: linear-gradient(135deg, #fbfbfb 0%, #e1e1e1 50%, #c8c8c8 100%) !important;
+  border: 2.5px solid #a0a0a0 !important;
+  box-shadow: 0 0 10px rgba(160, 160, 160, 0.5) !important;
+  padding: 8px 10px;
 }
 
 .leaderboard-row.rank-2 .leaderboard-rank {
-  font-size: 1.2rem !important;
+  font-size: 1.25rem !important;
   font-weight: 900 !important;
 }
 
+.leaderboard-row.rank-2 .leaderboard-player-avatar {
+  width: 34px;
+  height: 34px;
+  border: 2px solid #a0a0a0;
+}
+
+.leaderboard-row.rank-2 .leaderboard-player-name {
+  font-size: 0.95rem;
+  font-weight: 800 !important;
+}
+
+.leaderboard-row.rank-2 .leaderboard-score {
+  font-size: 0.95rem;
+}
+
 .leaderboard-row.rank-3 {
-  background: linear-gradient(135deg, #f7dcd0 0%, #d49372 50%, #b86b42 100%) !important;
-  border: 2.5px solid #8e4f2b !important;
-  box-shadow: 0 0 5px rgba(184, 107, 66, 0.4);
+  background: linear-gradient(135deg, #faebe3 0%, #dca487 50%, #c67f59 100%) !important;
+  border: 2.5px solid #a05c36 !important;
+  box-shadow: 0 0 8px rgba(198, 127, 89, 0.4) !important;
+  padding: 7px 9px;
 }
 
 .leaderboard-row.rank-3 .leaderboard-rank {
   font-size: 1.15rem !important;
   font-weight: 900 !important;
+}
+
+.leaderboard-row.rank-3 .leaderboard-player-avatar {
+  width: 32px;
+  height: 32px;
+  border: 2px solid #a05c36;
+}
+
+.leaderboard-row.rank-3 .leaderboard-player-name {
+  font-size: 0.9rem;
+  font-weight: 700 !important;
+}
+
+.leaderboard-row.rank-3 .leaderboard-score {
+  font-size: 0.9rem;
 }
 
 /* Responsive Overrides */
@@ -1878,12 +1923,14 @@ body {
 
 .leaderboard-row {
   display: grid;
-  grid-template-columns: 55px 1fr 75px;
+  grid-template-columns: 35px 1fr 65px;
   align-items: center;
-  padding: 6px 4px;
+  padding: 6px 8px;
   background: rgba(255, 255, 255, 0.35);
-  border-radius: 8px;
+  border-radius: 10px;
   border-bottom: 1px solid rgba(0,0,0,0.04);
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .leaderboard-row.my-row {
@@ -1900,17 +1947,17 @@ body {
   width: 25px;
   height: 25px;
   border-radius: 50%;
-  margin-left: 4px;
 }
 
-.rank-1 { background: #ffd700; color: #5c3b00; box-shadow: 0 2px 0 #cc9a00; }
-.rank-2 { background: #c0c0c0; color: #3d3d3d; box-shadow: 0 2px 0 #999; }
-.rank-3 { background: #cd7f32; color: #4e2908; box-shadow: 0 2px 0 #964f1c; }
+.leaderboard-rank.rank-1 { background: #ffd700; color: #5c3b00; box-shadow: 0 2px 0 #cc9a00; }
+.leaderboard-rank.rank-2 { background: #c0c0c0; color: #3d3d3d; box-shadow: 0 2px 0 #999; }
+.leaderboard-rank.rank-3 { background: #cd7f32; color: #4e2908; box-shadow: 0 2px 0 #964f1c; }
 
 .leaderboard-player {
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
 }
 
 .leaderboard-player-avatar {
@@ -1933,18 +1980,19 @@ body {
 
 .leaderboard-player-name {
   font-weight: 600;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 110px;
+  max-width: 135px;
 }
 
 .leaderboard-score {
   font-weight: 900;
   text-align: right;
   color: #4a2d18;
-  font-size: 0.88rem;
+  font-size: 0.92rem;
+  white-space: nowrap;
 }
 
 #leaderboardClose {
