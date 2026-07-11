@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Topo Frenzy — Aplasta al topo</title>
+<meta name="description" content="Un juego de aplastar topos rápido y divertido para jugar con amigos.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐹</text></svg>">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg-decor" aria-hidden="true">
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+    <div class="cloud c3"></div>
+  </div>
+
+  <main class="game-wrap">
+    <header class="header">
+      <h1><span class="mole-emoji">🐹</span> Topo Frenzy</h1>
+      <p class="subtitle">¡Aplasta todos los topos que puedas antes de que se acabe el tiempo!</p>
+    </header>
+
+    <section class="hud">
+      <div class="hud-item">
+        <span class="hud-label">Puntos</span>
+        <span class="hud-value" id="score">0</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">Tiempo</span>
+        <span class="hud-value" id="time">30</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">Récord</span>
+        <span class="hud-value" id="highscore">0</span>
+      </div>
+    </section>
+
+    <div class="board-wrap">
+      <div class="board" id="board">
+        <!-- holes injected by JS -->
+      </div>
+
+      <div class="overlay" id="startOverlay">
+        <div class="overlay-card">
+          <h2>¿Listo para jugar?</h2>
+          <p>Haz clic en los topos apenas asomen la cabeza. ¡Cuidado con las bombas!</p>
+          <button class="btn primary" id="startBtn">▶ Jugar</button>
+          <div class="difficulty-select" role="group" aria-label="Dificultad">
+            <button class="chip active" data-diff="facil">Fácil</button>
+            <button class="chip" data-diff="normal">Normal</button>
+            <button class="chip" data-diff="dificil">Difícil</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="overlay" id="endOverlay" hidden>
+        <div class="overlay-card">
+          <h2 id="endTitle">¡Se acabó el tiempo!</h2>
+          <p>Puntuación final: <strong id="finalScore">0</strong></p>
+          <p id="newRecord" class="new-record" hidden>🎉 ¡Nuevo récord!</p>
+          <button class="btn primary" id="retryBtn">↻ Jugar de nuevo</button>
+          <button class="btn secondary" id="shareBtn">📤 Compartir</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>Hecho con 💚 para jugar con amigos · Comparte tu puntuación</p>
+    </footer>
+  </main>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
