@@ -1026,7 +1026,7 @@
 
   async function fetchLeaderboard() {
     try {
-      const res = await fetch(LEADERBOARD_BIN_URL);
+      const res = await fetch(`${LEADERBOARD_BIN_URL}?t=${Date.now()}`);
       if (!res.ok) throw new Error("Leaderboard network error");
       
       const data = await res.json();
@@ -1060,11 +1060,17 @@
               rankClass = "rank-3";
             }
             
+            let crownHTML = "";
+            if (i === 0) {
+              crownHTML = `<span class="leaderboard-crown">👑</span>`;
+            }
+            
             row.innerHTML = `
               <div class="leaderboard-rank ${rankClass}">${rankBadge}</div>
               <div class="leaderboard-player">
                 <div class="leaderboard-player-avatar">${getAvatarSVG(avatarPart)}</div>
                 <span class="leaderboard-player-name" title="${namePart}">${namePart}</span>
+                ${crownHTML}
               </div>
               <div class="leaderboard-score">${entry.score}</div>
             `;
@@ -1084,7 +1090,7 @@
     if (score <= 0) return;
     try {
       // 1. Fetch current scores
-      const res = await fetch(LEADERBOARD_BIN_URL);
+      const res = await fetch(`${LEADERBOARD_BIN_URL}?t=${Date.now()}`);
       if (!res.ok) throw new Error("Load bin error");
       const data = await res.json();
       const scoresList = data.scores || [];
@@ -1139,7 +1145,7 @@
     
     try {
       // 1. Fetch current scores
-      const res = await fetch(LEADERBOARD_BIN_URL);
+      const res = await fetch(`${LEADERBOARD_BIN_URL}?t=${Date.now()}`);
       if (!res.ok) throw new Error("Load bin error");
       const data = await res.json();
       let scoresList = data.scores || [];
