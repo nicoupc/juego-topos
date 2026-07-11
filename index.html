@@ -4,47 +4,65 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
 <title>Topo Frenzy — Aplasta al topo</title>
-<meta name="description" content="Un juego de aplastar topos rápido y divertido para jugar con amigos.">
+<meta name="description" content="Un juego de aplastar topos rápido y divertido para jugar con amigos, con música y animaciones.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐹</text></svg>">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="bg-decor" aria-hidden="true">
+  <div class="scene" aria-hidden="true">
+    <div class="sun"></div>
     <div class="cloud c1"></div>
     <div class="cloud c2"></div>
     <div class="cloud c3"></div>
+    <div class="tree-frame left">
+      <svg viewBox="0 0 200 260" preserveAspectRatio="xMinYMax meet"><g class="tree-sway">
+        <path d="M92 260 L92 150 Q80 150 80 130 Q60 128 60 100 Q40 96 44 68 Q30 58 44 36 Q46 12 78 14 Q92 -4 116 10 Q146 4 150 34 Q168 40 158 64 Q172 82 150 96 Q152 122 126 128 Q124 148 108 150 L108 260 Z" fill="#5a8a3c"/>
+        <path d="M100 260 L100 140" stroke="#6b4226" stroke-width="18" stroke-linecap="round"/>
+        <ellipse cx="70" cy="70" rx="16" ry="12" fill="#6fa84a" opacity="0.7"/>
+        <ellipse cx="130" cy="50" rx="14" ry="10" fill="#7cb85c" opacity="0.6"/>
+      </g></svg>
+    </div>
+    <div class="tree-frame right">
+      <svg viewBox="0 0 200 260" preserveAspectRatio="xMaxYMax meet"><g class="tree-sway rev">
+        <path d="M92 260 L92 150 Q80 150 80 130 Q60 128 60 100 Q40 96 44 68 Q30 58 44 36 Q46 12 78 14 Q92 -4 116 10 Q146 4 150 34 Q168 40 158 64 Q172 82 150 96 Q152 122 126 128 Q124 148 108 150 L108 260 Z" fill="#4f8036"/>
+        <path d="M100 260 L100 140" stroke="#5c3a20" stroke-width="18" stroke-linecap="round"/>
+        <ellipse cx="70" cy="70" rx="16" ry="12" fill="#6fa84a" opacity="0.7"/>
+        <ellipse cx="130" cy="50" rx="14" ry="10" fill="#7cb85c" opacity="0.6"/>
+      </g></svg>
+    </div>
   </div>
 
   <main class="game-wrap">
-    <header class="header">
-      <h1><span class="mole-emoji">🐹</span> Topo Frenzy</h1>
-      <p class="subtitle">¡Aplasta todos los topos que puedas antes de que se acabe el tiempo!</p>
-    </header>
+    <h1 class="logo">
+      <span class="logo-word word1">Topo</span><span class="logo-word word2">Frenzy</span>
+      <span class="logo-mole">🐹</span>
+    </h1>
 
-    <section class="hud">
-      <div class="hud-item">
-        <span class="hud-label">Puntos</span>
-        <span class="hud-value" id="score">0</span>
+    <div class="hud-panel">
+      <div class="hud-lives" id="lives" aria-label="Vidas"></div>
+      <div class="hud-score">
+        <span class="hud-score-label">Puntos</span>
+        <span class="hud-score-value" id="score">0</span>
       </div>
-      <div class="hud-item">
-        <span class="hud-label">Tiempo</span>
-        <span class="hud-value" id="time">30</span>
-      </div>
-      <div class="hud-item">
-        <span class="hud-label">Récord</span>
-        <span class="hud-value" id="highscore">0</span>
-      </div>
-    </section>
+      <div class="combo-badge" id="comboBadge" hidden>x1</div>
+      <button class="mute-btn" id="muteBtn" type="button" aria-label="Silenciar música">🔊</button>
+    </div>
+    <div class="hud-sub">
+      <span class="hud-sub-item">🏆 Récord: <b id="highscore">0</b></span>
+      <span class="frenzy-badge" id="frenzyBadge" hidden>🍄 ¡FRENZY x2!</span>
+    </div>
 
     <div class="board-wrap">
       <div class="board" id="board">
-        <!-- holes injected by JS -->
+        <div class="grass-tuft t1"></div>
+        <div class="grass-tuft t2"></div>
+        <div class="grass-tuft t3"></div>
       </div>
 
       <div class="overlay" id="startOverlay">
         <div class="overlay-card">
           <h2>¿Listo para jugar?</h2>
-          <p>Haz clic en los topos apenas asomen la cabeza. ¡Cuidado con las bombas!</p>
+          <p>Toca a los topos apenas asomen. ¡Evita a los villanos y atrapa el hongo mágico!</p>
           <button class="btn primary" id="startBtn">▶ Jugar</button>
           <div class="difficulty-select" role="group" aria-label="Dificultad">
             <button class="chip active" data-diff="facil">Fácil</button>
@@ -56,7 +74,7 @@
 
       <div class="overlay" id="endOverlay" hidden>
         <div class="overlay-card">
-          <h2 id="endTitle">¡Se acabó el tiempo!</h2>
+          <h2 id="endTitle">¡Juego terminado!</h2>
           <p>Puntuación final: <strong id="finalScore">0</strong></p>
           <p id="newRecord" class="new-record" hidden>🎉 ¡Nuevo récord!</p>
           <button class="btn primary" id="retryBtn">↻ Jugar de nuevo</button>
