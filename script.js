@@ -47,7 +47,7 @@
   const btnSettings = document.getElementById("btnSettings");
   const btnPlay = document.getElementById("btnPlay");
   const btnHelp = document.getElementById("btnHelp");
-  const btnLeaderboard = document.getElementById("btnLeaderboard");
+  // Leaderboard toggle elements removed
   
   const livesEl = document.getElementById("lives");
   const phaseIndicator = document.getElementById("phaseIndicator");
@@ -76,8 +76,8 @@
   const diffChips = document.querySelectorAll(".chip[data-diff]");
 
   // Global Leaderboard & Profile elements
-  const menuSideCol = document.getElementById("menuSideCol");
-  const leaderboardClose = document.getElementById("leaderboardClose");
+  const rankScrollUp = document.getElementById("rankScrollUp");
+  const rankScrollDown = document.getElementById("rankScrollDown");
   const profileCard = document.getElementById("profileCard");
   const profileViewMode = document.getElementById("profileViewMode");
   const profileEditMode = document.getElementById("profileEditMode");
@@ -1025,8 +1025,6 @@
   }
 
   async function fetchLeaderboard() {
-    if (!leaderboardList) return;
-    
     try {
       const res = await fetch(LEADERBOARD_BIN_URL);
       if (!res.ok) throw new Error("Leaderboard network error");
@@ -1034,41 +1032,43 @@
       const data = await res.json();
       const entries = data.scores || [];
       
-      leaderboardList.innerHTML = "";
-      if (entries.length === 0) {
-        leaderboardList.innerHTML = `<div class="leaderboard-empty">Sin puntajes globales aún</div>`;
-        return;
-      }
-      
-      const limit = Math.min(entries.length, 10);
-      for (let i = 0; i < limit; i++) {
-        const entry = entries[i];
-        const namePart = entry.name;
-        const avatarPart = entry.avatar || "mole";
-        
-        const isMe = namePart.trim().toLowerCase() === playerName.trim().toLowerCase();
-        
-        const row = document.createElement("div");
-        row.className = `leaderboard-row ${isMe ? "my-row" : ""}`;
-        
-        let rankBadge = i + 1;
-        if (i === 0) rankBadge = "🥇";
-        else if (i === 1) rankBadge = "🥈";
-        else if (i === 2) rankBadge = "🥉";
-        
-        row.innerHTML = `
-          <div class="leaderboard-rank rank-${i+1}">${rankBadge}</div>
-          <div class="leaderboard-player">
-            <div class="leaderboard-player-avatar">${getAvatarSVG(avatarPart)}</div>
-            <span class="leaderboard-player-name" title="${namePart}">${namePart}</span>
-          </div>
-          <div class="leaderboard-score">${entry.score}</div>
-        `;
-        leaderboardList.appendChild(row);
+      if (leaderboardList) {
+        leaderboardList.innerHTML = "";
+        if (entries.length === 0) {
+          leaderboardList.innerHTML = `<div class="leaderboard-empty">Sin puntajes globales aún</div>`;
+        } else {
+          const limit = Math.min(entries.length, 10);
+          for (let i = 0; i < limit; i++) {
+            const entry = entries[i];
+            const namePart = entry.name;
+            const avatarPart = entry.avatar || "mole";
+            const isMe = namePart.trim().toLowerCase() === playerName.trim().toLowerCase();
+            
+            const row = document.createElement("div");
+            row.className = `leaderboard-row rank-${i+1} ${isMe ? "my-row" : ""}`;
+            
+            let rankBadge = i + 1;
+            if (i === 0) rankBadge = "🥇";
+            else if (i === 1) rankBadge = "🥈";
+            else if (i === 2) rankBadge = "🥉";
+            
+            row.innerHTML = `
+              <div class="leaderboard-rank">${rankBadge}</div>
+              <div class="leaderboard-player">
+                <div class="leaderboard-player-avatar">${getAvatarSVG(avatarPart)}</div>
+                <span class="leaderboard-player-name" title="${namePart}">${namePart}</span>
+              </div>
+              <div class="leaderboard-score">${entry.score}</div>
+            `;
+            leaderboardList.appendChild(row);
+          }
+        }
       }
     } catch (err) {
       console.error("Error fetching leaderboard:", err);
-      leaderboardList.innerHTML = `<div class="leaderboard-loading">Error al conectar ranking</div>`;
+      if (leaderboardList) {
+        leaderboardList.innerHTML = `<div class="leaderboard-loading">Error al conectar ranking</div>`;
+      }
     }
   }
 
@@ -1914,13 +1914,16 @@
     if (currentHelpPage < maxHelpPage) showHelpPage(currentHelpPage + 1);
   });
 
-  btnLeaderboard.addEventListener("click", () => {
-    menuSideCol.classList.add("open");
-    fetchLeaderboard();
-  });
-  leaderboardClose.addEventListener("click", () => {
-    menuSideCol.classList.remove("open");
-  });
+  if (rankScrollUp && leaderboardList) {
+    rankScrollUp.addEventListener("click", () => {
+      leaderboardList.scrollBy({ top: -45, behavior: "smooth" });
+    });
+  }
+  if (rankScrollDown && leaderboardList) {
+    rankScrollDown.addEventListener("click", () => {
+      leaderboardList.scrollBy({ top: 45, behavior: "smooth" });
+    });
+  }
 
   btnEditProfile.addEventListener("click", () => {
     profileViewMode.hidden = true;
