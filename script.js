@@ -1048,12 +1048,20 @@
             row.className = `leaderboard-row rank-${i+1} ${isMe ? "my-row" : ""}`;
             
             let rankBadge = i + 1;
-            if (i === 0) rankBadge = "🥇";
-            else if (i === 1) rankBadge = "🥈";
-            else if (i === 2) rankBadge = "🥉";
+            let rankClass = "";
+            if (i === 0) {
+              rankBadge = "🥇";
+              rankClass = "rank-1";
+            } else if (i === 1) {
+              rankBadge = "🥈";
+              rankClass = "rank-2";
+            } else if (i === 2) {
+              rankBadge = "🥉";
+              rankClass = "rank-3";
+            }
             
             row.innerHTML = `
-              <div class="leaderboard-rank">${rankBadge}</div>
+              <div class="leaderboard-rank ${rankClass}">${rankBadge}</div>
               <div class="leaderboard-player">
                 <div class="leaderboard-player-avatar">${getAvatarSVG(avatarPart)}</div>
                 <span class="leaderboard-player-name" title="${namePart}">${namePart}</span>
@@ -1129,30 +1137,44 @@
     
     renderProfileUI();
     
-    const record = getLocalRecord();
-    if (record > 0) {
-      try {
-        // 1. Fetch current scores
-        const res = await fetch(LEADERBOARD_BIN_URL);
-        if (!res.ok) throw new Error("Load bin error");
-        const data = await res.json();
-        let scoresList = data.scores || [];
-        
-        // 2. Remove the old entry
-        scoresList = scoresList.filter(s => s.name.trim().toLowerCase() !== oldName.trim().toLowerCase());
-        
+    try {
+      // 1. Fetch current scores
+      const res = await fetch(LEADERBOARD_BIN_URL);
+      if (!res.ok) throw new Error("Load bin error");
+      const data = await res.json();
+      let scoresList = data.scores || [];
+      
+      // 2. Find old entry score to preserve it
+      let oldEntryIndex = scoresList.findIndex(s => s.name.trim().toLowerCase() === oldName.trim().toLowerCase());
+      let dbScore = 0;
+      if (oldEntryIndex !== -1) {
+        dbScore = scoresList[oldEntryIndex].score;
+        // Remove the old entry (we will add it back under the new name/avatar)
+        scoresList.splice(oldEntryIndex, 1);
+      }
+      
+      const localRecord = getLocalRecord();
+      const finalScore = Math.max(dbScore, localRecord);
+      
+      // Sync higher score back to local storage so the profile card reflects it
+      if (dbScore > localRecord) {
+        saveHighscore(dbScore);
+        renderProfileUI();
+      }
+      
+      if (finalScore > 0) {
         // 3. Add or update the new entry
         const existingIndex = scoresList.findIndex(s => s.name.trim().toLowerCase() === cleanedNewName.toLowerCase());
         if (existingIndex !== -1) {
-          if (record > scoresList[existingIndex].score) {
-            scoresList[existingIndex].score = record;
+          if (finalScore > scoresList[existingIndex].score) {
+            scoresList[existingIndex].score = finalScore;
             scoresList[existingIndex].avatar = newAvatar;
           }
         } else {
           scoresList.push({
             name: cleanedNewName,
             avatar: newAvatar,
-            score: record,
+            score: finalScore,
             date: new Date().toLocaleDateString()
           });
         }
@@ -1168,12 +1190,11 @@
           },
           body: JSON.stringify({ scores: topScores })
         });
-        
-        fetchLeaderboard();
-      } catch (e) {
-        console.error("Error updating profile in JSON storage:", e);
       }
-    } else {
+      
+      fetchLeaderboard();
+    } catch (e) {
+      console.error("Error updating profile in JSON storage:", e);
       fetchLeaderboard();
     }
   }
@@ -1827,6 +1848,7 @@
     saveHighscore(score);
     submitScoreToLeaderboard(score);
     updateMainHighscoreLabel();
+    renderProfileUI();
 
     // Chime
     if (victory) {
