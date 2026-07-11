@@ -265,7 +265,7 @@ body {
 }
 
 .logo span {
-  font-size: clamp(3rem, 5vw, 3.4rem);
+  font-size: clamp(3rem, 11vw, 5.2rem);
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: -2px;
@@ -281,7 +281,7 @@ body {
 }
 
 .logo-y {
-  font-size: clamp(1.8rem, 3.5vw, 2.2rem) !important;
+  font-size: clamp(2rem, 8vw, 3.2rem) !important;
   color: #8ed149;
   transform: rotate(10deg) translate(-10px, -5px);
   text-shadow: 0 4px 0 var(--wood-dark);
@@ -1364,7 +1364,7 @@ body {
   left: 20px;
   top: 20px;
   z-index: 100;
-  width: 340px;
+  width: 320px;
   background: #f8edd1;
   border: 6px solid var(--wood-dark) !important;
   border-radius: 18px;
@@ -1503,7 +1503,7 @@ body {
   right: 20px;
   top: 20px;
   z-index: 100;
-  width: 340px;
+  width: 320px;
   background: #f8edd1;
   border: 6px solid var(--wood-dark);
   border-radius: 18px;
@@ -1598,8 +1598,8 @@ body {
 }
 
 .leaderboard-row.rank-1 .leaderboard-player-avatar {
-  width: 38px;
-  height: 38px;
+  width: 32px;
+  height: 32px;
   border: 2.5px solid #d4af37;
 }
 
@@ -1609,10 +1609,13 @@ body {
   color: #3d2300 !important;
 }
 
-.leaderboard-row.rank-1 .leaderboard-player-name::after {
-  content: " 👑";
-  font-size: 1.1rem;
+.leaderboard-crown {
+  font-size: 0.95rem;
+  flex-shrink: 0;
   vertical-align: middle;
+  line-height: 1;
+  margin-left: 2px;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
 }
 
 .leaderboard-row.rank-1 .leaderboard-score {
@@ -1923,7 +1926,7 @@ body {
 
 .leaderboard-row {
   display: grid;
-  grid-template-columns: 35px 1fr 65px;
+  grid-template-columns: 30px 1fr 60px;
   align-items: center;
   padding: 6px 8px;
   background: rgba(255, 255, 255, 0.35);
@@ -1956,7 +1959,7 @@ body {
 .leaderboard-player {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
   min-width: 0;
 }
 
@@ -1984,7 +1987,8 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 135px;
+  max-width: 150px;
+  flex-grow: 1;
 }
 
 .leaderboard-score {
