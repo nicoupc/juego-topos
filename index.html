@@ -69,6 +69,57 @@
 
     <!-- ================= MAIN MENU SCREEN ================= -->
     <div class="screen active" id="menuScreen">
+      
+      <!-- 1. FLOATING PROFILE BADGE (TOP-LEFT) -->
+      <div class="floating-profile-badge" id="profileCard">
+        <!-- View Mode -->
+        <div class="profile-view-mode" id="profileViewMode">
+          <div class="profile-avatar-badge" id="profileViewAvatar"></div>
+          <div class="profile-info">
+            <span class="profile-name" id="profileViewName">Jugador Anónimo</span>
+            <span class="profile-highscore">Récord: <b id="profileViewRecord">0</b></span>
+          </div>
+          <button class="edit-profile-btn" id="btnEditProfile" title="Editar Perfil">✏️</button>
+        </div>
+        
+        <!-- Edit Mode (hidden by default) -->
+        <div class="profile-edit-mode" id="profileEditMode" hidden>
+          <div class="avatar-selector">
+            <button type="button" class="avatar-arrow" id="avatarPrev">&lt;</button>
+            <div class="avatar-option" id="avatarCurrentOption"></div>
+            <button type="button" class="avatar-arrow" id="avatarNext">&gt;</button>
+          </div>
+          <div class="profile-edit-inputs">
+            <input type="text" class="profile-input" id="inputProfileName" maxlength="12" placeholder="Tu Nombre">
+            <button class="save-profile-btn" id="btnSaveProfile" title="Guardar">Guardar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. FLOATING RANKING BOARD (TOP-RIGHT) -->
+      <div class="floating-mini-leaderboard" id="miniLeaderboardCard">
+        <h3 class="mini-leaderboard-title">RANKING MUNDIAL</h3>
+        
+        <div class="mini-leaderboard-container-wrapper">
+          <!-- Scroll Up Arrow Button -->
+          <button class="rank-scroll-btn up" id="rankScrollUp" title="Subir" aria-label="Subir Ranking">▲</button>
+          
+          <div class="mini-leaderboard-list-container">
+            <div class="leaderboard-header">
+              <span>Pos</span>
+              <span>Jugador</span>
+              <span>Pts</span>
+            </div>
+            <div class="mini-leaderboard-list" id="leaderboardList">
+              <div class="leaderboard-loading">Cargando...</div>
+            </div>
+          </div>
+          
+          <!-- Scroll Down Arrow Button -->
+          <button class="rank-scroll-btn down" id="rankScrollDown" title="Bajar" aria-label="Bajar Ranking">▼</button>
+        </div>
+      </div>
+
       <div class="menu-layout">
         <!-- Column 1: Main Menu Options -->
         <div class="menu-main-col">
@@ -149,74 +200,6 @@
             <button class="wood-btn circle" id="btnHelp" title="Instrucciones" aria-label="Instrucciones">
               <span class="wood-btn-text">?</span>
             </button>
-
-            <!-- Leaderboard Trophy Button (visible on mobile only, as sidebar handles desktop) -->
-            <button class="wood-btn circle leaderboard-toggle-btn" id="btnLeaderboard" title="Tabla de Clasificación" aria-label="Tabla de Clasificación">
-              <svg viewBox="0 0 24 24" width="38" height="38">
-                <path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v3c0 2.44 1.72 4.48 4 4.9C7.84 15.9 9.8 17 12 17s4.16-1.1 4.9-2.1c2.28-.42 4-2.46 4-4.9V7c0-1.1-.9-2-2-2zM5 10V7h2v3H5zm14 0h-2V7h2v3z" fill="#fff"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Column 2: Leaderboard & User Profile Panel -->
-        <div class="menu-side-col" id="menuSideCol">
-          <!-- Close button (visible only on mobile overlays) -->
-          <button class="card-close" id="leaderboardClose" aria-label="Cerrar">&times;</button>
-          
-          <div class="leaderboard-tablet">
-            <!-- 1. PROFILE SECTION -->
-            <div class="profile-section">
-              <h3 class="side-title">MI PERFIL</h3>
-              <div class="profile-card" id="profileCard">
-                
-                <!-- View Mode -->
-                <div class="profile-view-mode" id="profileViewMode">
-                  <div class="profile-avatar-badge" id="profileViewAvatar">
-                    <!-- Current Avatar SVG dynamically rendered -->
-                  </div>
-                  <div class="profile-info">
-                    <span class="profile-name" id="profileViewName">Jugador Anónimo</span>
-                    <span class="profile-highscore">Mi Récord: <b id="profileViewRecord">0</b></span>
-                  </div>
-                  <button class="edit-profile-btn" id="btnEditProfile" title="Editar Perfil">✏️</button>
-                </div>
-
-                <!-- Edit Mode (hidden by default) -->
-                <div class="profile-edit-mode" id="profileEditMode" hidden>
-                  <div class="avatar-selector">
-                    <button type="button" class="avatar-arrow" id="avatarPrev">&lt;</button>
-                    <div class="avatar-option" id="avatarCurrentOption">
-                      <!-- Selected Avatar preview dynamically rendered -->
-                    </div>
-                    <button type="button" class="avatar-arrow" id="avatarNext">&gt;</button>
-                  </div>
-                  
-                  <div class="profile-edit-inputs">
-                    <input type="text" class="profile-input" id="inputProfileName" maxlength="12" placeholder="Tu Nombre">
-                    <button class="save-profile-btn" id="btnSaveProfile" title="Guardar">Guardar</button>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
-            <hr class="tablet-divider">
-
-            <!-- 2. GLOBAL RANKING SECTION -->
-            <div class="leaderboard-section">
-              <h3 class="side-title">RANKING MUNDIAL</h3>
-              <div class="leaderboard-list-container">
-                <div class="leaderboard-header">
-                  <span>Puesto</span>
-                  <span>Jugador</span>
-                  <span>Puntos</span>
-                </div>
-                <div class="leaderboard-list" id="leaderboardList">
-                  <div class="leaderboard-loading">Cargando clasificación...</div>
-                </div>
-              </div>
-            </div>
 
           </div>
         </div>
