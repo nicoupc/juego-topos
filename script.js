@@ -1233,33 +1233,38 @@
     }
     
     if (currentPhase === 2) {
-      return roll < 0.25 ? "helmet_mole" : "mole";
+      return roll < 0.30 ? "helmet_mole" : "mole";
     }
     
     if (currentPhase === 3) {
       if (roll < 0.20) return "bucket_mole";
-      if (roll < 0.40) return "helmet_mole";
+      if (roll < 0.50) return "helmet_mole";
       return "mole";
     }
     
     if (currentPhase === 4) {
-      if (roll < 0.45) return "disguise_mole"; // Increased to 45%
-      if (roll < 0.60) return "bucket_mole";
-      if (roll < 0.75) return "helmet_mole";
+      if (roll < 0.25) return "disguise_mole";
+      if (roll < 0.45) return "bucket_mole";
+      if (roll < 0.70) return "helmet_mole";
       return "mole";
     }
     
     if (currentPhase === 5) {
-      if (roll < 0.25) return "fork_mole"; // Increased to 25% (was 20%)
-      if (roll < 0.60) return "disguise_mole";
-      if (roll < 0.75) return "bucket_mole";
+      // 5 kinds present
+      if (roll < 0.20) return "fork_mole";
+      if (roll < 0.40) return "disguise_mole";
+      if (roll < 0.60) return "bucket_mole";
+      if (roll < 0.80) return "helmet_mole";
       return "mole";
     }
 
     if (currentPhase === 6) {
+      // 6 kinds present
       if (roll < 0.15) return "zombie_mole";
-      if (roll < 0.35) return "fork_mole"; // Increased to 20% (was 15%)
-      if (roll < 0.70) return "disguise_mole";
+      if (roll < 0.30) return "fork_mole";
+      if (roll < 0.50) return "disguise_mole";
+      if (roll < 0.65) return "bucket_mole";
+      if (roll < 0.80) return "helmet_mole";
       return "mole";
     }
 
@@ -1270,11 +1275,11 @@
       if (roll < 0.08) return "bubble_hammer";
       
       const subRoll = Math.random();
-      if (subRoll < 0.15) return "zombie_mole";
-      if (subRoll < 0.35) return "fork_mole"; // Increased to 20% (was 15%)
-      if (subRoll < 0.65) return "disguise_mole";
-      if (subRoll < 0.78) return "bucket_mole";
-      if (subRoll < 0.90) return "helmet_mole";
+      if (subRoll < 0.20) return "zombie_mole";
+      if (subRoll < 0.40) return "fork_mole";
+      if (subRoll < 0.55) return "disguise_mole";
+      if (subRoll < 0.70) return "bucket_mole";
+      if (subRoll < 0.85) return "helmet_mole";
       return "mole";
     }
 
@@ -1427,9 +1432,16 @@
   }
 
   function executeHordeSpawning() {
-    // Spawn 6 to 8 critters rapidly on all free holes
     const cfg = DIFFICULTIES[difficulty];
-    const spawnCount = difficulty === "facil" ? 5 : (difficulty === "normal" ? 6 : 8);
+    
+    // Scale spawn count: increase intensity in later phases (Phase 6+)
+    let spawnCount = difficulty === "facil" ? 5 : (difficulty === "normal" ? 6 : 8);
+    if (phase >= 6) {
+      if (difficulty === "facil") spawnCount = 6;
+      else if (difficulty === "normal") spawnCount = 8;
+      else spawnCount = 9; // Fill the entire board on hard!
+    }
+    
     let spawned = 0;
 
     const interval = setInterval(() => {
@@ -1448,15 +1460,33 @@
       const idx = randomFreeHoleIndex();
       if (idx !== -1) {
         const hole = holes[idx];
-        // Mixed random variant or erizo
-        const isErizo = Math.random() < cfg.erizoChance;
-        const kind = isErizo ? "erizo" : (Math.random() < 0.5 ? "mole" : (Math.random() < 0.5 ? "helmet_mole" : "bucket_mole"));
+        
+        // Pick phase-appropriate critter kind using the same pickCritterKind function
+        const kind = pickCritterKind(phase);
 
         hole.up = true;
         hole.kind = kind;
         hole.upToken += 1;
         hole.state = {}; // Reset state
-        hole.maxHp = (kind === "mole" || kind === "erizo") ? 1 : (kind === "helmet_mole" ? 2 : 3);
+        
+        // Remove left-over fork classes if any
+        hole.el.classList.remove("fork-up");
+
+        // Set HPs & state matching normal spawn loop rules
+        if (kind === "mole" || kind === "erizo" || kind === "disguise_mole" || kind === "bubble_heart" || kind === "bubble_hammer") {
+          hole.maxHp = 1;
+        } else if (kind === "helmet_mole") {
+          hole.maxHp = 2;
+        } else if (kind === "bucket_mole") {
+          hole.maxHp = 3;
+        } else if (kind === "zombie_mole") {
+          hole.maxHp = 5;
+        } else if (kind === "fork_mole") {
+          hole.maxHp = 1;
+          hole.state = { forkUp: true }; // Starts with fork raised
+          hole.el.classList.add("fork-up");
+        }
+        
         hole.hp = hole.maxHp;
         hole.critterEl.innerHTML = getCritterHTML(kind, { ...hole.state, hp: hole.hp });
 
