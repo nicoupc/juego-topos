@@ -122,6 +122,10 @@
   let activeCritterCount = 0;
   let spawnTimeoutId = null;
   let forkIntervalId = null;
+  let menuCritterIntervalId = null;
+  let menuCritterHideTimeoutId = null;
+  let menuCritterKind = null;
+  let menuCritterIsHit = false;
   let mutedMusic = localStorage.getItem(MUSIC_MUTE_KEY) === "1";
   let mutedSFX = localStorage.getItem(SFX_MUTE_KEY) === "1";
   
@@ -1786,6 +1790,8 @@
     initAudio();
     if (actx && actx.state === "suspended") actx.resume();
 
+    stopMenuCritterLoop(); // Stop interactive main menu loop
+
     // Reset game state
     running = true;
     paused = false;
@@ -1847,6 +1853,7 @@
     
     updateMainHighscoreLabel();
     startMusic("menu");
+    startMenuCritterLoop(); // Restart menu interactive loop
   }
 
   function endGame(victory) {
@@ -2047,6 +2054,120 @@
 
 
 
+  /* =========================================================================
+     INTERACTIVE MAIN MENU PRACTICE ZONE
+     ========================================================================= */
+
+  function startMenuCritterLoop() {
+    stopMenuCritterLoop();
+    
+    // Spawn immediately on start, always forcing a mole variant
+    spawnMenuCritter(true);
+    
+    // Run loop every 4.8 seconds
+    menuCritterIntervalId = setInterval(() => {
+      if (running || paused) return;
+      spawnMenuCritter(false);
+    }, 4800);
+  }
+
+  function spawnMenuCritter(forceMole) {
+    const menuCritter = document.getElementById("menuCritter");
+    const menuMoleContainer = document.getElementById("menuMoleContainer");
+    if (!menuCritter || !menuMoleContainer) return;
+    
+    // Determine critter type (forced mole on start, random 30% erizo/70% mole otherwise)
+    let kind = "mole";
+    if (forceMole) {
+      const skins = ["mole", "helmet_mole", "disguise_mole", "bucket_mole", "fork_mole", "zombie_mole"];
+      kind = skins[Math.floor(Math.random() * skins.length)];
+    } else {
+      const roll = Math.random();
+      if (roll < 0.30) {
+        kind = "erizo";
+      } else {
+        const skins = ["mole", "helmet_mole", "disguise_mole", "bucket_mole", "fork_mole", "zombie_mole"];
+        kind = skins[Math.floor(Math.random() * skins.length)];
+      }
+    }
+    
+    menuCritterKind = kind;
+    menuCritterIsHit = false;
+    
+    // Render SVG
+    const state = kind === "fork_mole" ? { forkUp: true } : { hp: 1 };
+    menuCritter.innerHTML = getCritterHTML(kind, state);
+    
+    // Clean up classes
+    menuMoleContainer.classList.remove("hit");
+    menuMoleContainer.classList.remove("shake");
+    menuMoleContainer.classList.remove("fork-up");
+    if (kind === "fork_mole") menuMoleContainer.classList.add("fork-up");
+    
+    // Force browser reflow to guarantee popup transition works
+    const child = menuCritter.firstElementChild;
+    if (child) void child.offsetHeight;
+    
+    menuMoleContainer.classList.add("up");
+    
+    // Auto hide after 2.3 seconds
+    menuCritterHideTimeoutId = setTimeout(() => {
+      menuMoleContainer.classList.remove("up");
+      menuMoleContainer.classList.remove("fork-up");
+    }, 2300);
+  }
+
+  function stopMenuCritterLoop() {
+    if (menuCritterIntervalId) clearInterval(menuCritterIntervalId);
+    if (menuCritterHideTimeoutId) clearTimeout(menuCritterHideTimeoutId);
+    menuCritterIntervalId = null;
+    menuCritterHideTimeoutId = null;
+    
+    const menuMoleContainer = document.getElementById("menuMoleContainer");
+    if (menuMoleContainer) {
+      menuMoleContainer.classList.remove("up");
+      menuMoleContainer.classList.remove("hit");
+      menuMoleContainer.classList.remove("shake");
+      menuMoleContainer.classList.remove("fork-up");
+    }
+  }
+
+  function initMenuCritterEvents() {
+    const menuCritter = document.getElementById("menuCritter");
+    const menuMoleContainer = document.getElementById("menuMoleContainer");
+    if (!menuCritter || !menuMoleContainer) return;
+    
+    menuCritter.addEventListener("pointerdown", (e) => {
+      e.stopPropagation();
+      
+      // Only clickable if active/up and not already hit
+      if (!menuMoleContainer.classList.contains("up") || menuCritterIsHit) return;
+      
+      menuCritterIsHit = true;
+      clearTimeout(menuCritterHideTimeoutId);
+      
+      if (menuCritterKind === "erizo") {
+        playSFX("hit_erizo");
+        menuMoleContainer.classList.add("shake");
+        // Show burst particles (mock container with elements)
+        showBurst({ el: menuMoleContainer }, ["💢", "💨"]);
+      } else {
+        playSFX("hit_mole");
+        menuMoleContainer.classList.add("hit");
+        showBurst({ el: menuMoleContainer }, ["💫", "💨"]);
+        showScorePop({ el: menuMoleContainer }, "+10", "#ffd043");
+      }
+      
+      // Force sink
+      setTimeout(() => {
+        menuMoleContainer.classList.remove("up");
+        menuMoleContainer.classList.remove("hit");
+        menuMoleContainer.classList.remove("shake");
+        menuMoleContainer.classList.remove("fork-up");
+      }, 380);
+    });
+  }
+
   // Initialization
   injectHelpGraphics();
   buildBoard();
@@ -2054,6 +2175,10 @@
   updateMainHighscoreLabel();
   renderProfileUI();
   fetchLeaderboard();
+  
+  // Interactive Menu Critter
+  initMenuCritterEvents();
+  startMenuCritterLoop();
 
 
 

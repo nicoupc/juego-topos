@@ -307,15 +307,43 @@ body {
   align-items: flex-end;
 }
 
-.menu-mole-svg {
+.menu-critter-wrapper {
+  position: absolute;
+  width: 170px;
+  height: 240px;
+  bottom: 12px;
+  overflow: hidden;
   z-index: 3;
-  animation: menuMoleBob 3s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+.menu-critter {
+  position: absolute;
+  width: 100%;
+  height: 160px;
+  bottom: 0;
+  left: 0;
+  transform: translateY(105%);
+  transition: transform 0.25s cubic-bezier(0.2, 0.88, 0.35, 1.25);
+  pointer-events: auto;
+  cursor: pointer;
   filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.25));
 }
 
-@keyframes menuMoleBob {
-  0% { transform: translateY(12px) rotate(-1deg); }
-  100% { transform: translateY(-4px) rotate(1deg); }
+.menu-mole-container.up .menu-critter {
+  transform: translateY(-5%);
+}
+
+.menu-mole-container.hit .menu-critter {
+  animation: critterSquash 0.35s cubic-bezier(0.25, 0.8, 0.25, 1.25) forwards;
+}
+
+.menu-mole-container.shake .menu-critter {
+  animation: critterSquash 0.35s cubic-bezier(0.25, 0.8, 0.25, 1.25) forwards;
+}
+
+.menu-mole-container.shake {
+  animation: boardShake 0.4s ease;
 }
 
 .menu-mound-front {
