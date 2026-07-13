@@ -1480,8 +1480,9 @@
       setTimeout(() => {
         if (!running || paused || isHorde) {
           // If the game ended or paused before the timeout fired, release the hole
-          if (hole.up && hole.kind === null) {
+          if (hole.up) {
             hole.up = false;
+            hole.kind = null;
             if (activeCritterCount > 0) activeCritterCount--;
           }
           return;
@@ -1964,6 +1965,16 @@
     paused = true;
     pauseOverlay.hidden = false;
     stopMusic();
+    
+    // Clear the active spawn loop timer to prevent duplicate parallel loops on resume
+    if (spawnTimeoutId) {
+      clearTimeout(spawnTimeoutId);
+      spawnTimeoutId = null;
+    }
+    
+    // Smoothly pop down all currently visible critters and reset the active count
+    holes.forEach(popDown);
+    activeCritterCount = 0;
   }
 
   function resumeGame() {
@@ -1971,6 +1982,8 @@
     paused = false;
     pauseOverlay.hidden = true;
     startMusic("game");
+    
+    // Clean start of the spawn loop
     spawnLoop();
   }
 
