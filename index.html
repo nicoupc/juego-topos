@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=1.4.4">
+  <link rel="stylesheet" href="style.css?v=1.4.5">
 </head>
 <body>
   <!-- Global SVG Gradients definitions (Resolves color-fill bugs in dynamic SVGs) -->
@@ -255,7 +255,7 @@
         <!-- Page 1: Basic Game & Combo -->
         <div class="tablet-page active" data-page="1">
           <p class="tablet-text">
-            ¡Golpea todos los <strong>topos</strong> que aparezcan durante las 10 fases! Pero <strong>evita pegarles a los erizos</strong> o perderás vida.
+            ¡Derrota a cada topo que surja del suelo a lo largo de las 10 etapas! Sin embargo, ten cuidado de no lastimar a los erizos, o perderás valiosos corazones de salud.
           </p>
           <div class="tablet-row">
             <div class="tablet-item">
@@ -267,7 +267,7 @@
               <div class="item-graphic graphic-cuye-hit"></div>
             </div>
           </div>
-          <p class="tablet-subtext">Aumenta tu combo con cada 5 golpes a topos.</p>
+          <p class="tablet-subtext">¡Multiplica tus puntos! Conecta golpes seguidos para elevar tu combo cada 5 aciertos.</p>
           <div class="tablet-combo-preview">
             <span class="mini-mallet">🔨</span>
             <span class="mini-mallet">🔨</span>
@@ -280,7 +280,7 @@
         <!-- Page 2: Prepared Moles (Helmets) -->
         <div class="tablet-page" data-page="2">
           <p class="tablet-text">
-            Algunos topos estarán más preparados y necesitarán <strong>más golpes</strong> para ahuyentarlos.
+            ¡Ciertos rivales son más resistentes! Los topos equipados con cascos o baldes requerirán varios impactos consecutivos para ser ahuyentados.
           </p>
           <div class="tablet-row column">
             <div class="tablet-item-horizontal">
@@ -300,19 +300,19 @@
 
         <!-- Page 3: Special Moles (Fork, Disguise, Zombie) -->
         <div class="tablet-page" data-page="3">
-          <p class="tablet-text">Otros tratarán de confundirte o defenderse.</p>
+          <p class="tablet-text">¡Aprende a lidiar con las mecánicas de los enemigos especiales!</p>
           <div class="tablet-grid">
             <div class="grid-item">
               <div class="item-graphic graphic-disguise-mole"></div>
-              <div class="grid-desc">¡Topo disfrazado! 🔨 ✓</div>
+              <div class="grid-desc">¡El astuto topo con disfraz intentará distraerte! 🔨 ✓</div>
             </div>
             <div class="grid-item">
               <div class="item-graphic graphic-fork-mole"></div>
-              <div class="grid-desc">¡Pégale solo si <strong>baja su tenedor</strong> o perderás vida!</div>
+              <div class="grid-desc">¡Espera a que baje su tenedor! Si atacas mientras se defiende, saldrás herido.</div>
             </div>
             <div class="grid-item">
               <div class="item-graphic graphic-zombie-mole"></div>
-              <div class="grid-desc">¡Topo resistente! <strong>¡Pégale sin parar!</strong></div>
+              <div class="grid-desc">¡El temible topo zombie posee mucha salud, golpéalo rápido!</div>
             </div>
           </div>
         </div>
@@ -320,16 +320,16 @@
         <!-- Page 4: Horde and Powerups -->
         <div class="tablet-page" data-page="4">
           <p class="tablet-text">
-            Al final de cada fase, prepárate para <strong>sobrevivir la horda</strong>. ¡Topos y erizos saldrán al mismo tiempo!
+            ¡Resiste el ataque de la Horda al final de cada etapa! El tablero se llenará de topos y erizos al mismo tiempo.
           </p>
           <div class="tablet-row powerups">
             <div class="powerup-card">
               <div class="item-graphic graphic-heart-bubble"></div>
-              <span>Recupera vida con el corazón.</span>
+              <span>Sana tus heridas rompiendo la burbuja de corazón.</span>
             </div>
             <div class="powerup-card">
               <div class="item-graphic graphic-hammer-bubble"></div>
-              <span>Derrota a todos <strong>DE UN GOLPE</strong> con el mega martillo.</span>
+              <span>¡Usa el mega martillo para despejar todo el tablero al instante!</span>
             </div>
           </div>
           <!-- Quick Play button inside slide 4 -->
@@ -400,6 +400,6 @@
 
   <div class="toast" id="toast" hidden></div>
 
-  <script src="script.js?v=1.4.4"></script>
+  <script src="script.js?v=1.4.5"></script>
 </body>
 </html>
