@@ -130,7 +130,7 @@
           </h1>
 
           <!-- Giant Menu Mole (matching Image 1) -->
-          <div class="menu-mole-container">
+          <div class="menu-mole-container" id="menuMoleContainer">
             <!-- Dust & Flying Rocks -->
             <div class="menu-rocks" aria-hidden="true">
               <span class="rock r1"></span>
@@ -138,48 +138,9 @@
               <span class="rock r3"></span>
               <span class="rock r4"></span>
             </div>
-            <!-- SVG Menu Mole -->
-            <svg class="menu-mole-svg" viewBox="0 0 200 200" width="220" height="220">
-              <defs>
-                <radialGradient id="menuMoleGrad" cx="50%" cy="40%" r="50%">
-                  <stop offset="0%" stop-color="#ab7448" />
-                  <stop offset="100%" stop-color="#693c1d" />
-                </radialGradient>
-              </defs>
-              <!-- Left Paw -->
-              <path d="M30 110 C25 90 45 80 50 95 C55 110 40 120 30 110 Z" fill="#ffa099" stroke="#5a2f15" stroke-width="3"/>
-              <path d="M25 90 Q22 80 27 88" stroke="#5a2f15" stroke-width="2" stroke-linecap="round"/>
-              <path d="M35 85 Q36 76 38 85" stroke="#5a2f15" stroke-width="2" stroke-linecap="round"/>
-              <path d="M45 88 Q50 80 46 89" stroke="#5a2f15" stroke-width="2" stroke-linecap="round"/>
-              <!-- Right Paw -->
-              <path d="M170 110 C175 90 155 80 150 95 C145 110 160 120 170 110 Z" fill="#ffa099" stroke="#5a2f15" stroke-width="3"/>
-              <path d="M175 90 Q178 80 173 88" stroke="#5a2f15" stroke-width="2" stroke-linecap="round"/>
-              <path d="M165 85 Q164 76 162 85" stroke="#5a2f15" stroke-width="2" stroke-linecap="round"/>
-              <path d="M155 88 Q150 80 154 89" stroke="#5a2f15" stroke-width="2" stroke-linecap="round"/>
-              <!-- Body -->
-              <path d="M50 160 C50 60 150 60 150 160 C150 175 50 175 50 160 Z" fill="url(#moleGrad)" stroke="#5a2f15" stroke-width="4"/>
-              <!-- Hair/Spikes on Head -->
-              <path d="M78 68 L68 64 L76 74" stroke="#4a230d" stroke-width="3" stroke-linecap="round" fill="none"/>
-              <path d="M122 68 L132 64 L124 74" stroke="#4a230d" stroke-width="3" stroke-linecap="round" fill="none"/>
-              <path d="M100 58 L100 50" stroke="#4a230d" stroke-width="3" stroke-linecap="round" fill="none"/>
-              <!-- Angry Eyebrows -->
-              <path d="M70 94 Q85 82 96 95" stroke="#2b1408" stroke-width="7" stroke-linecap="round" fill="none"/>
-              <path d="M130 94 Q115 82 104 95" stroke="#2b1408" stroke-width="7" stroke-linecap="round" fill="none"/>
-              <!-- Closed/Determined Eyes -->
-              <path d="M73 103 Q85 107 92 101" stroke="#2b1408" stroke-width="4" stroke-linecap="round" fill="none"/>
-              <path d="M127 103 Q115 107 108 101" stroke="#2b1408" stroke-width="4" stroke-linecap="round" fill="none"/>
-              <!-- Nose Snout (Pink) -->
-              <ellipse cx="100" cy="116" rx="20" ry="14" fill="#ffb4a2" stroke="#5a2f15" stroke-width="3"/>
-              <path d="M96 112 C96 109 104 109 104 112 C104 115 96 115 96 112 Z" fill="#e57c73"/> <!-- nose tip -->
-              <!-- Mouth with teeth -->
-              <path d="M92 121 Q100 128 108 121" stroke="#5a2f15" stroke-width="3" fill="none"/>
-              <rect x="97" y="121" width="6" height="5" fill="#fff" stroke="#5a2f15" stroke-width="1.5" rx="1"/>
-              <!-- Muzzle highlights -->
-              <circle cx="86" cy="120" r="1" fill="#5a2f15" opacity="0.5"/>
-              <circle cx="89" cy="122" r="1" fill="#5a2f15" opacity="0.5"/>
-              <circle cx="114" cy="120" r="1" fill="#5a2f15" opacity="0.5"/>
-              <circle cx="111" cy="122" r="1" fill="#5a2f15" opacity="0.5"/>
-            </svg>
+            <div class="menu-critter-wrapper">
+              <div class="menu-critter" id="menuCritter"></div>
+            </div>
             <div class="menu-mound-front"></div>
           </div>
 
