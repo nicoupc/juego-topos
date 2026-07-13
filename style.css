@@ -2247,8 +2247,8 @@ body {
 }
 
 @keyframes critterNoseTwitch {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(1.5px, -1px) scale(1.15); }
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(0.6px, -0.4px); }
 }
 
 /* Hedgehog Ears Wiggle */
@@ -2269,8 +2269,8 @@ body {
 }
 
 @keyframes erizoNoseTwitch {
-  0% { transform: scale(1) translateY(0); }
-  100% { transform: scale(1.2) translateY(-1.5px); }
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-0.6px); }
 }
 
 /* White Helmet Wobble */
