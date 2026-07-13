@@ -1726,40 +1726,50 @@ body {
 
 /* Responsive Overrides */
 @media (max-width: 1149px) {
+  #menuScreen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-y: auto;
+    padding: 20px 10px 40px 10px;
+    box-sizing: border-box;
+    min-height: 100dvh;
+  }
+  
+  .floating-profile-badge {
+    position: relative;
+    left: auto;
+    top: auto;
+    margin: 10px auto 25px auto;
+    width: 92%;
+    max-width: 320px;
+    z-index: 10;
+    order: 1;
+  }
+  
+  .menu-layout {
+    order: 2;
+    width: 100%;
+  }
+  
   .floating-mini-leaderboard {
-    display: none;
+    display: block; /* Make sure it is visible on mobile/tablets! */
+    position: relative;
+    right: auto;
+    top: auto;
+    margin: 25px auto 10px auto;
+    width: 92%;
+    max-width: 320px;
+    z-index: 10;
+    order: 3;
   }
 }
 
 @media (max-width: 900px) {
   .floating-profile-badge {
-    position: absolute; /* fallback to absolute inside relative menu screen on mobile */
-    left: 12px;
-    top: 12px;
-    width: auto;
-    max-width: 220px;
-    padding: 8px 10px;
-    border-width: 4px !important;
-    border-radius: 12px;
-    box-shadow: 0 4px 0 var(--wood-dark), 0 6px 12px rgba(0,0,0,0.25);
-  }
-  
-  .floating-profile-badge .profile-avatar-badge {
-    width: 44px;
-    height: 44px;
-  }
-  
-  .floating-profile-badge .profile-name {
-    font-size: 0.9rem;
-  }
-  
-  .floating-profile-badge .profile-highscore {
-    font-size: 0.72rem;
-  }
-  
-  .floating-profile-badge .edit-profile-btn {
-    font-size: 1rem;
-    padding: 2px;
+    width: 92%;
+    max-width: 320px;
   }
 }
 
