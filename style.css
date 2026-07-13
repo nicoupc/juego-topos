@@ -2248,7 +2248,7 @@ body {
 
 @keyframes critterNoseTwitch {
   0% { transform: translate(0, 0); }
-  100% { transform: translate(0.6px, -0.4px); }
+  100% { transform: translate(0.3px, -0.2px); }
 }
 
 /* Hedgehog Ears Wiggle */
@@ -2261,16 +2261,6 @@ body {
   85% { transform: rotate(-14deg); }
   90% { transform: rotate(14deg); }
   95% { transform: rotate(0deg); }
-}
-
-/* Hedgehog Nose Wiggle */
-.erizo-nose {
-  animation: erizoNoseTwitch 0.8s infinite ease-in-out alternate;
-}
-
-@keyframes erizoNoseTwitch {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-0.6px); }
 }
 
 /* White Helmet Wobble */
@@ -2294,7 +2284,7 @@ body {
 }
 
 /* Fork Sway (Fork Mole hand block) */
-.fork-group {
+.fork-sway-inner {
   animation: forkSway 1.5s infinite ease-in-out alternate;
 }
 

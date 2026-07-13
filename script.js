@@ -788,16 +788,18 @@
     const baseMole = getMoleSVG("angry", "normal");
     
     const forkHTML = `
-      <g class="fork-group" style="transform-origin: 21px 50px;">
-        <rect x="18" y="32" width="6" height="38" rx="2" fill="#3498db" stroke="#1c3d52" stroke-width="2"/>
-        <path d="M14 32 L28 32 L26 22 L16 22 Z" fill="#3498db" stroke="#1c3d52" stroke-width="2"/>
-        <rect x="16" y="12" width="2" height="12" fill="#3498db" stroke="#1c3d52" stroke-width="1.5"/>
-        <rect x="20" y="10" width="2" height="14" fill="#3498db" stroke="#1c3d52" stroke-width="1.5"/>
-        <rect x="24" y="12" width="2" height="12" fill="#3498db" stroke="#1c3d52" stroke-width="1.5"/>
-        <circle cx="21" cy="50" r="7" fill="#ffbda8" stroke="#4a2711" stroke-width="2"/>
-        <polygon class="fork-sparkle" points="12,18 15,25 22,22 17,29 23,34 15,32 12,39" fill="#00ffff">
-          <animate attributeName="opacity" values="0.3;0.9;0.3" dur="0.6s" repeatCount="indefinite"/>
-        </polygon>
+      <g class="fork-group">
+        <g class="fork-sway-inner" style="transform-origin: 21px 50px;">
+          <rect x="18" y="32" width="6" height="38" rx="2" fill="#3498db" stroke="#1c3d52" stroke-width="2"/>
+          <path d="M14 32 L28 32 L26 22 L16 22 Z" fill="#3498db" stroke="#1c3d52" stroke-width="2"/>
+          <rect x="16" y="12" width="2" height="12" fill="#3498db" stroke="#1c3d52" stroke-width="1.5"/>
+          <rect x="20" y="10" width="2" height="14" fill="#3498db" stroke="#1c3d52" stroke-width="1.5"/>
+          <rect x="24" y="12" width="2" height="12" fill="#3498db" stroke="#1c3d52" stroke-width="1.5"/>
+          <circle cx="21" cy="50" r="7" fill="#ffbda8" stroke="#4a2711" stroke-width="2"/>
+          <polygon class="fork-sparkle" points="12,18 15,25 22,22 17,29 23,34 15,32 12,39" fill="#00ffff">
+            <animate attributeName="opacity" values="0.3;0.9;0.3" dur="0.6s" repeatCount="indefinite"/>
+          </polygon>
+        </g>
       </g>
       </svg>
     `;
