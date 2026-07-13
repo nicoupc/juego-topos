@@ -2228,3 +2228,103 @@ body {
     padding: 20px 14px;
   }
 }
+
+/* ---------- CHARACTER VECTOR SVG MICRO-ANIMATIONS ---------- */
+
+/* Blinking Eyes (applied to all moles and erizo, except zombie) */
+.critter-eye {
+  animation: critterBlink 3.8s infinite ease-in-out;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes critterBlink {
+  0%, 90%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.08); }
+}
+
+/* Snout/Nose Twitches (applied to standard mole, helmet, bucket, fork, and disguised) */
+.critter-nose-tip {
+  animation: critterNoseTwitch 1.6s infinite ease-in-out alternate;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes critterNoseTwitch {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(1px, -0.6px); }
+}
+
+/* Hedgehog Ears Wiggle */
+.erizo-ear {
+  animation: erizoEarWiggle 2.8s infinite ease-in-out;
+  transform-box: fill-box;
+  transform-origin: bottom center;
+}
+
+@keyframes erizoEarWiggle {
+  0%, 88%, 100% { transform: rotate(0deg); }
+  91% { transform: rotate(-7deg); }
+  94% { transform: rotate(7deg); }
+  97% { transform: rotate(0deg); }
+}
+
+/* Hedgehog Nose Wiggle */
+.erizo-nose {
+  animation: erizoNoseTwitch 1.4s infinite ease-in-out alternate;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes erizoNoseTwitch {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.15) translateY(-0.3px); }
+}
+
+/* White Helmet Wobble */
+.helmet-group {
+  animation: helmetWobble 2.6s infinite ease-in-out alternate;
+  transform-box: fill-box;
+  transform-origin: bottom center;
+}
+
+@keyframes helmetWobble {
+  0% { transform: rotate(0deg) translateY(0); }
+  100% { transform: rotate(1.5deg) translateY(-0.8px); }
+}
+
+/* Metal Bucket Wobble */
+.bucket-group {
+  animation: bucketWobble 2.4s infinite ease-in-out alternate;
+  transform-box: fill-box;
+  transform-origin: bottom center;
+}
+
+@keyframes bucketWobble {
+  0% { transform: rotate(0deg) translateY(0); }
+  100% { transform: rotate(-2deg) translateY(-0.8px); }
+}
+
+/* Fork Sway (Fork Mole hand block) */
+.fork-group {
+  animation: forkSway 2.2s infinite ease-in-out alternate;
+  transform-box: fill-box;
+  transform-origin: bottom right;
+}
+
+@keyframes forkSway {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(2deg) translate(0.5px, -0.5px); }
+}
+
+/* Zombie Creepy Breathing (Slow vertical scaling) */
+.zombie-group {
+  animation: zombieBreathe 2.2s infinite ease-in-out alternate;
+  transform-box: fill-box;
+  transform-origin: bottom center;
+}
+
+@keyframes zombieBreathe {
+  0% { transform: scaleY(1) scaleX(1); }
+  100% { transform: scaleY(0.96) scaleX(1.02); }
+}
