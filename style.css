@@ -2302,3 +2302,175 @@ body {
   0% { transform: scaleY(1) scaleX(1); }
   100% { transform: scaleY(0.91) scaleX(1.05); }
 }
+
+/* ---------- MOBILE PORTRAIT ACTIONS & MODALS ---------- */
+
+/* Mobile Top Actions Bar (Hidden by default on Desktop) */
+.mobile-header-actions {
+  display: none;
+}
+
+/* Modal Backdrop */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 150;
+  animation: modalFadeIn 0.25s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Close Button for Modals */
+.modal-close-btn {
+  display: none;
+}
+
+@media (max-width: 1149px) {
+  .mobile-header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 92%;
+    max-width: 480px;
+    margin: 15px auto 10px auto;
+    z-index: 10;
+    gap: 15px;
+    box-sizing: border-box;
+  }
+
+  .mobile-action-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: linear-gradient(to bottom, #d49b6a, #9e643b);
+    border: 4px solid var(--wood-dark);
+    border-radius: 14px;
+    padding: 10px 14px;
+    color: #fff;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    box-shadow: 
+      0 4px 0 var(--wood-dark),
+      inset 0 1px 0 rgba(255,255,255,0.3);
+    cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+
+  .mobile-action-btn:active {
+    transform: translateY(3px);
+    box-shadow: 
+      0 1px 0 var(--wood-dark),
+      inset 0 1px 0 rgba(255,255,255,0.3);
+  }
+
+  .btn-avatar-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--wood-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .btn-avatar-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .btn-trophy-icon {
+    font-size: 1.2rem;
+    filter: drop-shadow(0 2px 0 rgba(0,0,0,0.3));
+  }
+
+  /* Modal Close Button */
+  .modal-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: -14px;
+    right: -14px;
+    width: 36px;
+    height: 36px;
+    background: #e74c3c;
+    border: 4px solid var(--wood-dark);
+    border-radius: 50%;
+    color: #fff;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 900;
+    font-size: 1.4rem;
+    cursor: pointer;
+    box-shadow: 0 4px 0 var(--wood-dark);
+    z-index: 10;
+    box-sizing: border-box;
+    transition: transform 0.1s ease;
+  }
+
+  .modal-close-btn:active {
+    transform: scale(0.9) translateY(2px);
+  }
+
+  /* Hide default floating panels on mobile layout */
+  .floating-profile-badge {
+    display: none !important;
+  }
+  .floating-mini-leaderboard {
+    display: none !important;
+  }
+
+  /* Overlay Modal Mode when class show-modal is active */
+  #profileCard.show-modal {
+    display: block !important;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 92% !important;
+    max-width: 340px !important;
+    z-index: 200 !important;
+    margin: 0 !important;
+    animation: modalPopUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    box-shadow: 
+      0 12px 0 var(--wood-dark), 
+      0 15px 30px rgba(0,0,0,0.5), 
+      inset 0 0 15px rgba(0,0,0,0.15) !important;
+  }
+
+  #miniLeaderboardCard.show-modal {
+    display: block !important;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 92% !important;
+    max-width: 340px !important;
+    z-index: 200 !important;
+    margin: 0 !important;
+    animation: modalPopUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    box-shadow: 
+      0 12px 0 var(--wood-dark), 
+      0 15px 30px rgba(0,0,0,0.5), 
+      inset 0 0 15px rgba(0,0,0,0.15) !important;
+  }
+
+  @keyframes modalPopUp {
+    from { opacity: 0; transform: translate(-50%, -45%) scale(0.95); }
+    to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  }
+}

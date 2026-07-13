@@ -106,6 +106,14 @@
 
   const toastEl = document.getElementById("toast");
 
+  // Mobile modal overlay elements
+  const mobileProfileBtn = document.getElementById("mobileProfileBtn");
+  const mobileRankBtn = document.getElementById("mobileRankBtn");
+  const mobileAvatarIcon = document.getElementById("mobileAvatarIcon");
+  const btnCloseProfileModal = document.getElementById("btnCloseProfileModal");
+  const btnCloseRankModal = document.getElementById("btnCloseRankModal");
+  const modalBackdrop = document.getElementById("modalBackdrop");
+
   // Game State
   let running = false;
   let paused = false;
@@ -1028,6 +1036,9 @@
   function renderProfileUI() {
     profileViewName.textContent = playerName;
     profileViewAvatar.innerHTML = getAvatarSVG(playerAvatar);
+    if (mobileAvatarIcon) {
+      mobileAvatarIcon.innerHTML = getAvatarSVG(playerAvatar);
+    }
     avatarCurrentOption.innerHTML = getAvatarSVG(AVATAR_LIST[selectedAvatarIndex]);
     inputProfileName.value = playerName;
     
@@ -2122,6 +2133,40 @@
     });
   }
 
+  // --- MOBILE PORTRAIT MODALS CONTROLLERS ---
+  const closeAllModals = () => {
+    if (profileCard) profileCard.classList.remove("show-modal");
+    if (miniLeaderboardCard) miniLeaderboardCard.classList.remove("show-modal");
+    if (modalBackdrop) modalBackdrop.hidden = true;
+  };
+
+  if (mobileProfileBtn && profileCard && modalBackdrop) {
+    mobileProfileBtn.addEventListener("click", () => {
+      profileCard.classList.add("show-modal");
+      modalBackdrop.hidden = false;
+    });
+  }
+
+  if (mobileRankBtn && miniLeaderboardCard && modalBackdrop) {
+    mobileRankBtn.addEventListener("click", () => {
+      miniLeaderboardCard.classList.add("show-modal");
+      modalBackdrop.hidden = false;
+      fetchLeaderboard();
+    });
+  }
+
+  if (btnCloseProfileModal) {
+    btnCloseProfileModal.addEventListener("click", closeAllModals);
+  }
+
+  if (btnCloseRankModal) {
+    btnCloseRankModal.addEventListener("click", closeAllModals);
+  }
+
+  if (modalBackdrop) {
+    modalBackdrop.addEventListener("click", closeAllModals);
+  }
+
   btnEditProfile.addEventListener("click", () => {
     profileViewMode.hidden = true;
     profileEditMode.hidden = false;
@@ -2156,6 +2201,7 @@
     
     changeProfile(nameVal, AVATAR_LIST[selectedAvatarIndex]);
     showToast("Perfil guardado.");
+    closeAllModals();
   });
 
   // Settings Toggles

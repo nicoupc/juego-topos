@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=1.4.1">
+  <link rel="stylesheet" href="style.css?v=1.4.2">
 </head>
 <body>
   <!-- Global SVG Gradients definitions (Resolves color-fill bugs in dynamic SVGs) -->
@@ -70,8 +70,21 @@
     <!-- ================= MAIN MENU SCREEN ================= -->
     <div class="screen active" id="menuScreen">
       
+      <!-- Mobile Top Bar Actions (hidden on desktop) -->
+      <div class="mobile-header-actions">
+        <button class="mobile-action-btn" id="mobileProfileBtn" title="Mi Perfil" aria-label="Mi Perfil">
+          <div class="btn-avatar-icon" id="mobileAvatarIcon"></div>
+          <span class="btn-label">Perfil</span>
+        </button>
+        <button class="mobile-action-btn" id="mobileRankBtn" title="Ranking Mundial" aria-label="Ranking Mundial">
+          <span class="btn-trophy-icon">🏆</span>
+          <span class="btn-label">Ranking</span>
+        </button>
+      </div>
+      
       <!-- 1. FLOATING PROFILE BADGE (TOP-LEFT) -->
       <div class="floating-profile-badge" id="profileCard">
+        <button class="modal-close-btn" id="btnCloseProfileModal" title="Cerrar" aria-label="Cerrar">&times;</button>
         <!-- View Mode -->
         <div class="profile-view-mode" id="profileViewMode">
           <div class="profile-avatar-badge" id="profileViewAvatar"></div>
@@ -98,6 +111,7 @@
 
       <!-- 2. FLOATING RANKING BOARD (TOP-RIGHT) -->
       <div class="floating-mini-leaderboard" id="miniLeaderboardCard">
+        <button class="modal-close-btn" id="btnCloseRankModal" title="Cerrar" aria-label="Cerrar">&times;</button>
         <h3 class="mini-leaderboard-title">RANKING MUNDIAL</h3>
         
         <div class="mini-leaderboard-container-wrapper">
@@ -384,6 +398,9 @@
 
   <div class="toast" id="toast" hidden></div>
 
-  <script src="script.js?v=1.4.1"></script>
+  <!-- Modal Overlay Backdrop for mobile/tablet -->
+  <div class="modal-backdrop" id="modalBackdrop" hidden></div>
+
+  <script src="script.js?v=1.4.2"></script>
 </body>
 </html>
