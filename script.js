@@ -125,6 +125,11 @@
   let phase = 1; // 1 to 10
   let phaseHits = 0; // hits in current phase
   let isHorde = false;
+  let hordeWarningTimeoutId = null;
+  let hordeSpawningIntervalId = null;
+  let hordeClearIntervalId = null;
+  let hordeSpawnedCount = 0;
+  let hordeTotalToSpawn = 0;
   
   let holes = []; // hole objects
   let activeCritterCount = 0;
@@ -1535,6 +1540,18 @@
   function startHorde() {
     isHorde = true;
     clearTimeout(spawnTimeoutId);
+    spawnTimeoutId = null;
+    
+    // Reset horde tracking variables
+    hordeSpawnedCount = 0;
+    
+    // Scale spawn count: increase intensity in later phases (Phase 6+)
+    hordeTotalToSpawn = difficulty === "facil" ? 5 : (difficulty === "normal" ? 6 : 8);
+    if (phase >= 6) {
+      if (difficulty === "facil") hordeTotalToSpawn = 6;
+      else if (difficulty === "normal") hordeTotalToSpawn = 8;
+      else hordeTotalToSpawn = 9; // Fill the entire board on hard!
+    }
     
     // Show banner
     hordeWarning.hidden = false;
@@ -1543,8 +1560,10 @@
     // Vibration warning
     if (navigator.vibrate) navigator.vibrate([150, 100, 150]);
 
-    setTimeout(() => {
+    if (hordeWarningTimeoutId) clearTimeout(hordeWarningTimeoutId);
+    hordeWarningTimeoutId = setTimeout(() => {
       hordeWarning.hidden = true;
+      hordeWarningTimeoutId = null;
       if (!running || paused) return;
       
       executeHordeSpawning();
@@ -1552,26 +1571,18 @@
   }
 
   function executeHordeSpawning() {
-    const cfg = DIFFICULTIES[difficulty];
+    if (hordeSpawningIntervalId) clearInterval(hordeSpawningIntervalId);
     
-    // Scale spawn count: increase intensity in later phases (Phase 6+)
-    let spawnCount = difficulty === "facil" ? 5 : (difficulty === "normal" ? 6 : 8);
-    if (phase >= 6) {
-      if (difficulty === "facil") spawnCount = 6;
-      else if (difficulty === "normal") spawnCount = 8;
-      else spawnCount = 9; // Fill the entire board on hard!
-    }
-    
-    let spawned = 0;
-
-    const interval = setInterval(() => {
+    hordeSpawningIntervalId = setInterval(() => {
       if (!running || paused) {
-        clearInterval(interval);
+        clearInterval(hordeSpawningIntervalId);
+        hordeSpawningIntervalId = null;
         return;
       }
 
-      if (spawned >= spawnCount) {
-        clearInterval(interval);
+      if (hordeSpawnedCount >= hordeTotalToSpawn) {
+        clearInterval(hordeSpawningIntervalId);
+        hordeSpawningIntervalId = null;
         // Wait for all to hide or be hit to resolve phase completion
         checkHordeClear();
         return;
@@ -1580,8 +1591,6 @@
       const idx = randomFreeHoleIndex();
       if (idx !== -1) {
         const hole = holes[idx];
-        
-        // Pick phase-appropriate critter kind using the same pickCritterKind function
         const kind = pickCritterKind(phase);
 
         hole.up = true;
@@ -1624,22 +1633,26 @@
           }
         }, 2200);
 
-        spawned++;
+        hordeSpawnedCount++;
       }
     }, 220);
   }
 
   function checkHordeClear() {
-    const checkInterval = setInterval(() => {
+    if (hordeClearIntervalId) clearInterval(hordeClearIntervalId);
+    
+    hordeClearIntervalId = setInterval(() => {
       if (!running || paused) {
-        clearInterval(checkInterval);
+        clearInterval(hordeClearIntervalId);
+        hordeClearIntervalId = null;
         return;
       }
 
       // Check if any holes are still up
       const anyActive = holes.some(h => h.up);
       if (!anyActive) {
-        clearInterval(checkInterval);
+        clearInterval(hordeClearIntervalId);
+        hordeClearIntervalId = null;
         resolvePhaseClear();
       }
     }, 300);
@@ -1982,6 +1995,20 @@
       clearTimeout(spawnTimeoutId);
       spawnTimeoutId = null;
     }
+
+    // Clear horde timers to prevent execution during pause
+    if (hordeWarningTimeoutId) {
+      clearTimeout(hordeWarningTimeoutId);
+      hordeWarningTimeoutId = null;
+    }
+    if (hordeSpawningIntervalId) {
+      clearInterval(hordeSpawningIntervalId);
+      hordeSpawningIntervalId = null;
+    }
+    if (hordeClearIntervalId) {
+      clearInterval(hordeClearIntervalId);
+      hordeClearIntervalId = null;
+    }
     
     // Smoothly pop down all currently visible critters and reset the active count
     holes.forEach(popDown);
@@ -1994,16 +2021,44 @@
     pauseOverlay.hidden = true;
     startMusic("game");
     
-    // Clean start of the spawn loop
-    spawnLoop();
+    if (isHorde) {
+      hordeWarning.hidden = true; // Ensure banner hides
+      
+      // Resume horde based on how many have spawned
+      if (hordeSpawnedCount < hordeTotalToSpawn) {
+        executeHordeSpawning();
+      } else {
+        checkHordeClear();
+      }
+    } else {
+      // Clean start of the spawn loop
+      spawnLoop();
+    }
   }
 
   function quitToMenu() {
     running = false;
     paused = false;
     clearTimeout(spawnTimeoutId);
+    spawnTimeoutId = null;
     clearInterval(forkIntervalId);
+    forkIntervalId = null;
     stopMusic();
+
+    // Clear horde timers
+    if (hordeWarningTimeoutId) {
+      clearTimeout(hordeWarningTimeoutId);
+      hordeWarningTimeoutId = null;
+    }
+    if (hordeSpawningIntervalId) {
+      clearInterval(hordeSpawningIntervalId);
+      hordeSpawningIntervalId = null;
+    }
+    if (hordeClearIntervalId) {
+      clearInterval(hordeClearIntervalId);
+      hordeClearIntervalId = null;
+    }
+    hordeWarning.hidden = true;
     
     holes.forEach(popDown);
     
@@ -2022,8 +2077,25 @@
     running = false;
     paused = false;
     clearTimeout(spawnTimeoutId);
+    spawnTimeoutId = null;
     clearInterval(forkIntervalId);
+    forkIntervalId = null;
     stopMusic();
+
+    // Clear horde timers
+    if (hordeWarningTimeoutId) {
+      clearTimeout(hordeWarningTimeoutId);
+      hordeWarningTimeoutId = null;
+    }
+    if (hordeSpawningIntervalId) {
+      clearInterval(hordeSpawningIntervalId);
+      hordeSpawningIntervalId = null;
+    }
+    if (hordeClearIntervalId) {
+      clearInterval(hordeClearIntervalId);
+      hordeClearIntervalId = null;
+    }
+    hordeWarning.hidden = true;
     
     holes.forEach(popDown);
 
