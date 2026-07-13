@@ -540,23 +540,23 @@
     let eyesHTML = "";
     if (eyesType === "sparkle") {
       eyesHTML = `
-        <g class="critter-eye">
+        <g class="critter-eye" style="transform-origin: 36px 46px;">
           <circle cx="36" cy="46" r="4.5" fill="#2b1408"/>
           <circle cx="34.5" cy="44.5" r="1.5" fill="#fff"/>
         </g>
-        <g class="critter-eye">
+        <g class="critter-eye" style="transform-origin: 64px 46px;">
           <circle cx="64" cy="46" r="4.5" fill="#2b1408"/>
           <circle cx="62.5" cy="44.5" r="1.5" fill="#fff"/>
         </g>
       `;
     } else if (eyesType === "surprised") {
       eyesHTML = `
-        <g class="critter-eye">
+        <g class="critter-eye" style="transform-origin: 36px 46px;">
           <circle cx="36" cy="46" r="6.5" fill="#2b1408"/>
           <circle cx="36" cy="46" r="4" fill="#ffa8a8"/>
           <circle cx="35" cy="45" r="1" fill="#fff"/>
         </g>
-        <g class="critter-eye">
+        <g class="critter-eye" style="transform-origin: 64px 46px;">
           <circle cx="64" cy="46" r="6.5" fill="#2b1408"/>
           <circle cx="64" cy="46" r="4" fill="#ffa8a8"/>
           <circle cx="63" cy="45" r="1" fill="#fff"/>
@@ -564,8 +564,8 @@
       `;
     } else { // normal
       eyesHTML = `
-        <circle class="critter-eye" cx="36" cy="46" r="4.5" fill="#2b1408"/>
-        <circle class="critter-eye" cx="64" cy="46" r="4.5" fill="#2b1408"/>
+        <circle class="critter-eye" cx="36" cy="46" r="4.5" fill="#2b1408" style="transform-origin: 36px 46px;"/>
+        <circle class="critter-eye" cx="64" cy="46" r="4.5" fill="#2b1408" style="transform-origin: 64px 46px;"/>
       `;
     }
 
@@ -615,7 +615,7 @@
         ${eyesHTML}
         <!-- Snout -->
         <ellipse cx="50" cy="56" rx="14" ry="10" fill="#ffb4a2" stroke="#4a2711" stroke-width="2.5"/>
-        <ellipse class="critter-nose-tip" cx="50" cy="52" rx="5" ry="3.5" fill="#e57c73"/>
+        <ellipse class="critter-nose-tip" cx="50" cy="52" rx="5" ry="3.5" fill="#e57c73" style="transform-origin: 50px 52px;"/>
         <!-- Mouth & Tooth -->
         <path d="M44 60 Q50 65 56 60" stroke="#4a2711" stroke-width="2.5" fill="none"/>
         <rect x="47.5" y="60.5" width="5" height="4.5" fill="#fff" stroke="#4a2711" stroke-width="1.2" rx="0.5"/>
@@ -657,21 +657,21 @@
         <path d="M25 85 C25 35 75 35 75 85 C75 92 25 92 25 85 Z" fill="url(#erizoFace)" stroke="#301e10" stroke-width="2.5"/>
         
         <!-- Little Ears -->
-        <g class="erizo-ear">
+        <g class="erizo-ear" style="transform-origin: 28px 46px;">
           <circle cx="28" cy="46" r="6" fill="#ffdcb8" stroke="#301e10" stroke-width="2"/>
           <circle cx="28" cy="46" r="3" fill="#ffa8a8"/>
         </g>
-        <g class="erizo-ear">
+        <g class="erizo-ear" style="transform-origin: 72px 46px;">
           <circle cx="72" cy="46" r="6" fill="#ffdcb8" stroke="#301e10" stroke-width="2"/>
           <circle cx="72" cy="46" r="3" fill="#ffa8a8"/>
         </g>
 
         <!-- Hedgehog Eyes (Sparkles) -->
-        <g class="critter-eye">
+        <g class="critter-eye" style="transform-origin: 40px 58px;">
           <circle cx="40" cy="58" r="4.2" fill="#2d1d1d"/>
           <circle cx="38.5" cy="56.5" r="1.5" fill="#fff"/>
         </g>
-        <g class="critter-eye">
+        <g class="critter-eye" style="transform-origin: 60px 58px;">
           <circle cx="60" cy="58" r="4.2" fill="#2d1d1d"/>
           <circle cx="58.5" cy="56.5" r="1.5" fill="#fff"/>
         </g>
@@ -681,7 +681,7 @@
         <circle cx="66" cy="66" r="4" fill="#ff7675" opacity="0.55"/>
 
         <!-- Cute Nose & Mouth -->
-        <ellipse class="erizo-nose" cx="50" cy="65" rx="5" ry="4" fill="#301e10"/>
+        <ellipse class="erizo-nose" cx="50" cy="65" rx="5" ry="4" fill="#301e10" style="transform-origin: 50px 65px;"/>
         <circle cx="49" cy="63.5" r="1" fill="#fff"/>
         <path d="M47 70 Q50 73 53 70" stroke="#301e10" stroke-width="2" fill="none" stroke-linecap="round"/>
       </svg>
@@ -711,11 +711,11 @@
         <path d="M25 85 C25 35 75 35 75 85 C75 92 25 92 25 85 Z" fill="url(#erizoFace)" stroke="#301e10" stroke-width="2.5"/>
         
         <!-- Big Round Mole Ears sticking out of the suit! -->
-        <g class="erizo-ear">
+        <g class="erizo-ear" style="transform-origin: 18px 38px;">
           <circle cx="18" cy="38" r="10" fill="#734222" stroke="#2b1408" stroke-width="2.5"/>
           <circle cx="18" cy="38" r="6" fill="#ffa8a8" stroke="#2b1408" stroke-width="1.5"/>
         </g>
-        <g class="erizo-ear">
+        <g class="erizo-ear" style="transform-origin: 82px 38px;">
           <circle cx="82" cy="38" r="10" fill="#734222" stroke="#2b1408" stroke-width="2.5"/>
           <circle cx="82" cy="38" r="6" fill="#ffa8a8" stroke="#2b1408" stroke-width="1.5"/>
         </g>
@@ -724,11 +724,11 @@
         <ellipse cx="50" cy="56" rx="20" ry="17" fill="url(#moleGrad)" stroke="#301e10" stroke-width="2"/>
 
         <!-- Eyes (Same sparkling eyes as erizo to confuse!) -->
-        <g class="critter-eye">
+        <g class="critter-eye" style="transform-origin: 40px 54px;">
           <circle cx="40" cy="54" r="4.2" fill="#2d1d1d"/>
           <circle cx="38.5" cy="52.5" r="1.5" fill="#fff"/>
         </g>
-        <g class="critter-eye">
+        <g class="critter-eye" style="transform-origin: 60px 54px;">
           <circle cx="60" cy="54" r="4.2" fill="#2d1d1d"/>
           <circle cx="58.5" cy="52.5" r="1.5" fill="#fff"/>
         </g>
@@ -745,7 +745,7 @@
         <!-- Mole Snout and Bucktooth -->
         <!-- Pink Snout -->
         <ellipse cx="50" cy="61" rx="7.5" ry="5.5" fill="#ffbda8" stroke="#4a2711" stroke-width="1.8"/>
-        <ellipse class="critter-nose-tip" cx="50" cy="58" rx="2.5" ry="1.8" fill="#e57c73"/>
+        <ellipse class="critter-nose-tip" cx="50" cy="58" rx="2.5" ry="1.8" fill="#e57c73" style="transform-origin: 50px 58px;"/>
         <!-- Curved Eyebrows -->
         <path d="M32 45 Q39 40 45 44" stroke="#2b1408" stroke-width="2.5" stroke-linecap="round" fill="none"/>
         <path d="M68 45 Q61 40 55 44" stroke="#2b1408" stroke-width="2.5" stroke-linecap="round" fill="none"/>
@@ -766,7 +766,7 @@
 
     const helmetHTML = `
       <!-- White construction helmet -->
-      <g class="helmet-group">
+      <g class="helmet-group" style="transform-origin: 50px 36px;">
         <path d="M15 36 C15 9 85 9 85 36 C85 39 15 39 15 36 Z" fill="#ffffff" stroke="#4a2711" stroke-width="3"/>
         <path d="M8 36 L92 36 C94 36 94 39 92 39 L8 39 C6 39 6 36 8 36 Z" fill="#ffffff" stroke="#4a2711" stroke-width="2.5"/>
         <path d="M50 14 C44 14 44 36 50 36 C56 36 56 14 50 14 Z" fill="#eaeaea" stroke="#4a2711" stroke-width="1.5"/>
@@ -797,7 +797,7 @@
     }
 
     const bucketHTML = `
-      <g class="bucket-group">
+      <g class="bucket-group" style="transform-origin: 50px 36px;">
         <path d="M12 36 C10 18 90 18 88 36" fill="none" stroke="#90caf9" stroke-width="3.5" stroke-linecap="round"/>
         <path d="M22 36 L30 10 L70 10 L78 36 Z" fill="#2980b9" stroke="#1c3d52" stroke-width="3"/>
         <path d="M17 36 L83 36 C86 36 86 40 83 40 L17 40 C14 40 14 36 17 36 Z" fill="#3498db" stroke="#1c3d52" stroke-width="2.5"/>
@@ -812,7 +812,7 @@
     const baseMole = getMoleSVG("angry", "normal");
     
     const forkHTML = `
-      <g class="fork-group">
+      <g class="fork-group" style="transform-origin: 21px 50px;">
         <rect x="18" y="32" width="6" height="38" rx="2" fill="#3498db" stroke="#1c3d52" stroke-width="2"/>
         <path d="M14 32 L28 32 L26 22 L16 22 Z" fill="#3498db" stroke="#1c3d52" stroke-width="2"/>
         <rect x="16" y="12" width="2" height="12" fill="#3498db" stroke="#1c3d52" stroke-width="1.5"/>
@@ -849,7 +849,7 @@
             <stop offset="100%" stop-color="#546e7a" />
           </radialGradient>
         </defs>
-        <g class="zombie-group">
+        <g class="zombie-group" style="transform-origin: 50px 85px;">
           <circle cx="20" cy="30" r="10" fill="#546e7a" stroke="#29434e" stroke-width="2.5"/>
           <circle cx="20" cy="30" r="5" fill="#cfd8dc"/>
           <circle cx="80" cy="30" r="10" fill="#546e7a" stroke="#29434e" stroke-width="2.5"/>
