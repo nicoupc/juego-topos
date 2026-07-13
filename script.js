@@ -1318,6 +1318,7 @@
       if (!hole.up) {
         hole.critterEl.innerHTML = "";
         hole.kind = null;
+        hole.el.classList.remove("hit"); // Clear hit class so next spawn is fresh!
       }
     }, delay);
   }
@@ -1328,11 +1329,7 @@
 
   function spawnSingleCritterAt(hole, cfg) {
     const kind = pickCritterKind(phase);
-
-    hole.up = true;
     hole.kind = kind;
-    hole.upToken += 1;
-    activeCritterCount++;
     hole.state = {}; // Reset state
 
     const myToken = hole.upToken;
@@ -1422,7 +1419,7 @@
       amountToSpawn = 2;
     }
     
-    // Spawn the determined amount of critters
+    // Spawn the determined amount of critters with a small staggered delay
     for (let i = 0; i < amountToSpawn; i++) {
       if (activeCritterCount >= cfg.maxActive) break;
       
@@ -1430,7 +1427,27 @@
       if (idx === -1) break;
       
       const hole = holes[idx];
-      spawnSingleCritterAt(hole, cfg);
+      
+      // Reserve the hole synchronously
+      hole.up = true;
+      hole.upToken += 1;
+      activeCritterCount++;
+      
+      // Stagger actual visual spawn (0ms, 180ms, 360ms)
+      const staggerDelay = i * 180;
+      
+      setTimeout(() => {
+        if (!running || paused || isHorde) {
+          // If the game ended or paused before the timeout fired, release the hole
+          if (hole.up && hole.kind === null) {
+            hole.up = false;
+            if (activeCritterCount > 0) activeCritterCount--;
+          }
+          return;
+        }
+        
+        spawnSingleCritterAt(hole, cfg);
+      }, staggerDelay);
     }
 
     // Schedule next spawn delay
