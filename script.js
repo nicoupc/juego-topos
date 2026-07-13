@@ -132,6 +132,12 @@
   // Profile & Leaderboard Settings
   const LEADERBOARD_BIN_URL = "https://api.npoint.io/670d03f5f10a160c0d72";
   
+  let playerId = localStorage.getItem("toposyerizos-playerid");
+  if (!playerId) {
+    playerId = "usr_" + Math.random().toString(36).substring(2, 11) + "_" + Date.now().toString(36);
+    localStorage.setItem("toposyerizos-playerid", playerId);
+  }
+  
   let playerName = localStorage.getItem("toposyerizos-playername") || "Jugador Anónimo";
   let playerAvatar = localStorage.getItem("toposyerizos-playeravatar") || "mole";
   const AVATAR_LIST = ["mole", "erizo", "helmet_mole", "disguise_mole", "bucket_mole", "fork_mole", "zombie_mole"];
@@ -1047,7 +1053,8 @@
             const entry = entries[i];
             const namePart = entry.name;
             const avatarPart = entry.avatar || "mole";
-            const isMe = namePart.trim().toLowerCase() === playerName.trim().toLowerCase();
+            // Highlight my own row check (ID matching, fallback to name matching for older version scores)
+            const isMe = entry.id ? (entry.id === playerId) : (namePart.trim().toLowerCase() === playerName.trim().toLowerCase());
             
             const row = document.createElement("div");
             row.className = `leaderboard-row rank-${i+1} ${isMe ? "my-row" : ""}`;
@@ -1101,14 +1108,27 @@
       const scoresList = data.scores || [];
       
       // 2. Add or update score
-      const existingIndex = scoresList.findIndex(s => s.name.trim().toLowerCase() === playerName.trim().toLowerCase());
+      // Match by unique ID first
+      let existingIndex = scoresList.findIndex(s => s.id === playerId);
+      if (existingIndex === -1) {
+        // Fallback: match by name if entry has no ID (migration from old version)
+        existingIndex = scoresList.findIndex(s => s.name.trim().toLowerCase() === playerName.trim().toLowerCase() && !s.id);
+        if (existingIndex !== -1) {
+          scoresList[existingIndex].id = playerId; // Claim it
+        }
+      }
+      
       if (existingIndex !== -1) {
         if (score > scoresList[existingIndex].score) {
           scoresList[existingIndex].score = score;
           scoresList[existingIndex].avatar = playerAvatar;
+          scoresList[existingIndex].date = new Date().toLocaleDateString();
         }
+        // Update name in database in case player renamed
+        scoresList[existingIndex].name = playerName.trim();
       } else {
         scoresList.push({
+          id: playerId,
           name: playerName.trim(),
           avatar: playerAvatar,
           score: score,
@@ -1155,13 +1175,23 @@
       const data = await res.json();
       let scoresList = data.scores || [];
       
-      // 2. Find old entry score to preserve it
-      let oldEntryIndex = scoresList.findIndex(s => s.name.trim().toLowerCase() === oldName.trim().toLowerCase());
+      // 2. Find player's entry score in the DB to preserve it
+      // Match by unique ID first
+      let entryIndex = scoresList.findIndex(s => s.id === playerId);
+      if (entryIndex === -1) {
+        // Fallback: match by name if entry has no ID (migration from old version)
+        entryIndex = scoresList.findIndex(s => s.name.trim().toLowerCase() === oldName.trim().toLowerCase() && !s.id);
+        if (entryIndex !== -1) {
+          scoresList[entryIndex].id = playerId; // Claim it
+        }
+      }
+      
       let dbScore = 0;
-      if (oldEntryIndex !== -1) {
-        dbScore = scoresList[oldEntryIndex].score;
-        // Remove the old entry (we will add it back under the new name/avatar)
-        scoresList.splice(oldEntryIndex, 1);
+      if (entryIndex !== -1) {
+        dbScore = scoresList[entryIndex].score;
+        // Keep name and avatar updated
+        scoresList[entryIndex].name = cleanedNewName;
+        scoresList[entryIndex].avatar = newAvatar;
       }
       
       const localRecord = getLocalRecord();
@@ -1174,15 +1204,12 @@
       }
       
       if (finalScore > 0) {
-        // 3. Add or update the new entry
-        const existingIndex = scoresList.findIndex(s => s.name.trim().toLowerCase() === cleanedNewName.toLowerCase());
-        if (existingIndex !== -1) {
-          if (finalScore > scoresList[existingIndex].score) {
-            scoresList[existingIndex].score = finalScore;
-            scoresList[existingIndex].avatar = newAvatar;
-          }
+        if (entryIndex !== -1) {
+          scoresList[entryIndex].score = finalScore;
         } else {
+          // If no existing entry was found/claimed, push a new one
           scoresList.push({
+            id: playerId,
             name: cleanedNewName,
             avatar: newAvatar,
             score: finalScore,
@@ -1190,7 +1217,7 @@
           });
         }
         
-        // 4. Sort and save
+        // Sort and save
         scoresList.sort((a, b) => b.score - a.score);
         const topScores = scoresList.slice(0, 50);
         
