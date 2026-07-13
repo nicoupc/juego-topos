@@ -1229,23 +1229,34 @@
 
     // Spawn ratios scale depending on the Phase (1 to 10)
     if (currentPhase === 1) {
-      return "mole"; // Phase 1 is basic tutorial
+      // Phase 1 has mostly normal moles, but introduces helmet and disguise moles!
+      if (roll < 0.20) return "helmet_mole";
+      if (roll < 0.25) return "disguise_mole";
+      return "mole";
     }
     
     if (currentPhase === 2) {
-      return roll < 0.30 ? "helmet_mole" : "mole";
+      // Phase 2 adds bucket moles
+      if (roll < 0.10) return "bucket_mole";
+      if (roll < 0.20) return "disguise_mole";
+      if (roll < 0.45) return "helmet_mole";
+      return "mole";
     }
     
     if (currentPhase === 3) {
+      // Phase 3 adds fork moles
+      if (roll < 0.08) return "fork_mole";
       if (roll < 0.20) return "bucket_mole";
-      if (roll < 0.50) return "helmet_mole";
+      if (roll < 0.35) return "disguise_mole";
+      if (roll < 0.60) return "helmet_mole";
       return "mole";
     }
     
     if (currentPhase === 4) {
-      if (roll < 0.25) return "disguise_mole";
-      if (roll < 0.45) return "bucket_mole";
-      if (roll < 0.70) return "helmet_mole";
+      if (roll < 0.15) return "fork_mole";
+      if (roll < 0.30) return "disguise_mole";
+      if (roll < 0.50) return "bucket_mole";
+      if (roll < 0.75) return "helmet_mole";
       return "mole";
     }
     
@@ -1315,25 +1326,7 @@
      SPAWNING LOOPS
      ========================================================================= */
 
-  function spawnLoop() {
-    if (!running || paused || isHorde) return;
-
-    const cfg = DIFFICULTIES[difficulty];
-
-    // Check if we hit the limit of concurrent moles
-    if (activeCritterCount >= cfg.maxActive) {
-      // Re-schedule soon
-      spawnTimeoutId = setTimeout(spawnLoop, 200);
-      return;
-    }
-
-    const idx = randomFreeHoleIndex();
-    if (idx === -1) {
-      spawnTimeoutId = setTimeout(spawnLoop, 150);
-      return;
-    }
-
-    const hole = holes[idx];
+  function spawnSingleCritterAt(hole, cfg) {
     const kind = pickCritterKind(phase);
 
     hole.up = true;
@@ -1382,6 +1375,63 @@
         popDown(hole);
       }
     }, visibleTime);
+  }
+
+  function spawnLoop() {
+    if (!running || paused || isHorde) return;
+
+    const cfg = DIFFICULTIES[difficulty];
+
+    // Check if we hit the limit of concurrent moles
+    if (activeCritterCount >= cfg.maxActive) {
+      // Re-schedule soon
+      spawnTimeoutId = setTimeout(spawnLoop, 200);
+      return;
+    }
+
+    // Determine how many critters to spawn in this tick (1, 2, or 3)
+    let amountToSpawn = 1;
+    
+    // Determine chances based on Phase (more concurrent spawns in later phases)
+    let multiSpawnChance = 0.05;
+    let tripleSpawnChance = 0;
+    
+    if (phase === 2) {
+      multiSpawnChance = 0.15;
+    } else if (phase === 3) {
+      multiSpawnChance = 0.25;
+      tripleSpawnChance = 0.05;
+    } else if (phase === 4) {
+      multiSpawnChance = 0.30;
+      tripleSpawnChance = 0.08;
+    } else if (phase === 5) {
+      multiSpawnChance = 0.35;
+      tripleSpawnChance = 0.12;
+    } else if (phase === 6) {
+      multiSpawnChance = 0.40;
+      tripleSpawnChance = 0.15;
+    } else if (phase >= 7) {
+      multiSpawnChance = 0.45;
+      tripleSpawnChance = 0.20;
+    }
+    
+    const roll = Math.random();
+    if (roll < tripleSpawnChance) {
+      amountToSpawn = 3;
+    } else if (roll < multiSpawnChance + tripleSpawnChance) {
+      amountToSpawn = 2;
+    }
+    
+    // Spawn the determined amount of critters
+    for (let i = 0; i < amountToSpawn; i++) {
+      if (activeCritterCount >= cfg.maxActive) break;
+      
+      const idx = randomFreeHoleIndex();
+      if (idx === -1) break;
+      
+      const hole = holes[idx];
+      spawnSingleCritterAt(hole, cfg);
+    }
 
     // Schedule next spawn delay
     const delay = cfg.spawnDelayMin + Math.random() * (cfg.spawnDelayMax - cfg.spawnDelayMin);
