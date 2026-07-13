@@ -13,27 +13,33 @@
   const DIFFICULTIES = {
     facil: {
       maxActive: 2,       // Maximum active moles at one time (prevents chaos)
-      baseMinUp: 1800,    // Min duration mole stays up (ms) - generous reaction time
-      baseMaxUp: 2500,    // Max duration mole stays up (ms)
+      startMinUp: 3000,   // Min duration mole stays up at Phase 1 (ms)
+      startMaxUp: 3800,   // Max duration mole stays up at Phase 1 (ms)
+      endMinUp: 1800,     // Min duration mole stays up at Phase 10 (ms)
+      endMaxUp: 2500,     // Max duration mole stays up at Phase 10 (ms)
       spawnDelayMin: 1200,// Min delay between spawns (ms)
       spawnDelayMax: 2000,// Max delay between spawns (ms)
-      erizoChance: 0.16,   // Increased from 0.12 to spawn more Erizos!
+      erizoChance: 0.16,   // Chance to spawn Erizos
     },
     normal: {
       maxActive: 3,
-      baseMinUp: 1300,
-      baseMaxUp: 1900,
+      startMinUp: 2500,   // Slower start for children/friendly play
+      startMaxUp: 3300,
+      endMinUp: 1300,     // Reaches standard speed at Phase 10
+      endMaxUp: 1900,
       spawnDelayMin: 800,
       spawnDelayMax: 1500,
-      erizoChance: 0.22,   // Increased from 0.16
+      erizoChance: 0.22,
     },
     dificil: {
       maxActive: 4,
-      baseMinUp: 900,
-      baseMaxUp: 1400,
+      startMinUp: 1800,
+      startMaxUp: 2500,
+      endMinUp: 900,
+      endMaxUp: 1400,
       spawnDelayMin: 500,
       spawnDelayMax: 1000,
-      erizoChance: 0.28,   // Increased from 0.20
+      erizoChance: 0.28,
     }
   };
 
@@ -1485,15 +1491,10 @@
     hole.el.classList.remove("hit");
     hole.el.classList.add("up");
 
-    // reaction/visible time (slower at the start, accelerates after phase 5)
-    let speedOffset = 0;
-    if (phase <= 5) {
-      speedOffset = 500 - (phase * 60); // Generous buffer that slowly decreases
-    } else {
-      speedOffset = -(phase - 6) * 60; // Accelerates from phase 6 to 10
-    }
-    const minUp = cfg.baseMinUp + speedOffset;
-    const maxUp = cfg.baseMaxUp + speedOffset;
+    // reaction/visible time (interpolated smoothly from phase 1 to 10)
+    const t = (phase - 1) / 9; // 0 at phase 1, 1 at phase 10
+    const minUp = cfg.startMinUp + t * (cfg.endMinUp - cfg.startMinUp);
+    const maxUp = cfg.startMaxUp + t * (cfg.endMaxUp - cfg.startMaxUp);
     const visibleTime = minUp + Math.random() * (maxUp - minUp);
 
     // Schedule hiding
