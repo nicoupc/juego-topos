@@ -745,6 +745,23 @@ body {
   transform: translateY(-4%);
 }
 
+/* Fork Mole Smooth Transitions */
+.fork-group {
+  transform: translateY(35px);
+  transition: transform 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.hole-container.fork-up .fork-group {
+  transform: translateY(0px);
+}
+.fork-sparkle {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-out;
+}
+.hole-container.fork-up .fork-sparkle {
+  opacity: 0.85;
+}
+
 /* Front dirt mound layer */
 .hole-front {
   position: absolute;
