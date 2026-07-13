@@ -1357,9 +1357,9 @@
     // Render initial SVG
     hole.critterEl.innerHTML = getCritterHTML(kind, { ...hole.state, hp: hole.hp });
 
-    // Make ~40% of critters blink almost immediately on spawn
+    // Make ~80% of critters blink almost immediately on spawn
     // by using a negative animation-delay to jump into the blink keyframes
-    if (kind !== "zombie_mole" && Math.random() < 0.4) {
+    if (kind !== "zombie_mole" && Math.random() < 0.8) {
       const eyes = hole.critterEl.querySelectorAll('.critter-eye');
       // Blink happens at 88-97% of 2.5s cycle = ~2.2s-2.425s
       // A negative delay of -2.15s to -2.25s starts them right at the blink
