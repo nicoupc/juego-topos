@@ -2138,13 +2138,13 @@
     if (!menuCritter || !menuMoleContainer) return;
     
     menuCritter.addEventListener("pointerdown", (e) => {
-      e.stopPropagation();
-      
       // Only clickable if active/up and not already hit
       if (!menuMoleContainer.classList.contains("up") || menuCritterIsHit) return;
       
       menuCritterIsHit = true;
       clearTimeout(menuCritterHideTimeoutId);
+      
+      playSFX("swing");
       
       if (menuCritterKind === "erizo") {
         playSFX("hit_erizo");
