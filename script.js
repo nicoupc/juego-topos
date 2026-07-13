@@ -781,25 +781,19 @@
   }
 
   function getForkMoleSVG(state) {
-    const forkUp = state.forkUp;
     const baseMole = getMoleSVG("angry", "normal");
     
-    const forkY = forkUp ? 0 : 35;
-    const sparkleHTML = forkUp
-      ? `<polygon points="12,18 15,25 22,22 17,29 23,34 15,32 12,39" fill="#00ffff" opacity="0.8">
-           <animate attributeName="opacity" values="0.3;0.9;0.3" dur="0.6s" repeatCount="indefinite"/>
-         </polygon>`
-      : "";
-
     const forkHTML = `
-      <g transform="translate(0, ${forkY})">
+      <g class="fork-group">
         <rect x="18" y="32" width="6" height="38" rx="2" fill="#3498db" stroke="#1c3d52" stroke-width="2"/>
         <path d="M14 32 L28 32 L26 22 L16 22 Z" fill="#3498db" stroke="#1c3d52" stroke-width="2"/>
         <rect x="16" y="12" width="2" height="12" fill="#3498db" stroke="#1c3d52" stroke-width="1.5"/>
         <rect x="20" y="10" width="2" height="14" fill="#3498db" stroke="#1c3d52" stroke-width="1.5"/>
         <rect x="24" y="12" width="2" height="12" fill="#3498db" stroke="#1c3d52" stroke-width="1.5"/>
         <circle cx="21" cy="50" r="7" fill="#ffbda8" stroke="#4a2711" stroke-width="2"/>
-        ${sparkleHTML}
+        <polygon class="fork-sparkle" points="12,18 15,25 22,22 17,29 23,34 15,32 12,39" fill="#00ffff">
+          <animate attributeName="opacity" values="0.3;0.9;0.3" dur="0.6s" repeatCount="indefinite"/>
+        </polygon>
       </g>
       </svg>
     `;
@@ -1252,16 +1246,16 @@
     }
     
     if (currentPhase === 5) {
-      if (roll < 0.20) return "fork_mole";
-      if (roll < 0.55) return "disguise_mole"; // Increased to 35%
-      if (roll < 0.70) return "bucket_mole";
+      if (roll < 0.25) return "fork_mole"; // Increased to 25% (was 20%)
+      if (roll < 0.60) return "disguise_mole";
+      if (roll < 0.75) return "bucket_mole";
       return "mole";
     }
 
     if (currentPhase === 6) {
       if (roll < 0.15) return "zombie_mole";
-      if (roll < 0.30) return "fork_mole";
-      if (roll < 0.65) return "disguise_mole"; // Increased to 35%
+      if (roll < 0.35) return "fork_mole"; // Increased to 20% (was 15%)
+      if (roll < 0.70) return "disguise_mole";
       return "mole";
     }
 
@@ -1273,8 +1267,8 @@
       
       const subRoll = Math.random();
       if (subRoll < 0.15) return "zombie_mole";
-      if (subRoll < 0.30) return "fork_mole";
-      if (subRoll < 0.65) return "disguise_mole"; // Increased to 35%
+      if (subRoll < 0.35) return "fork_mole"; // Increased to 20% (was 15%)
+      if (subRoll < 0.65) return "disguise_mole";
       if (subRoll < 0.78) return "bucket_mole";
       if (subRoll < 0.90) return "helmet_mole";
       return "mole";
@@ -1294,16 +1288,18 @@
     
     hole.up = false;
     hole.el.classList.remove("up");
+    hole.el.classList.remove("fork-up");
     
     if (activeCritterCount > 0) activeCritterCount--;
     
-    // Reset contents after transition finishes
+    // Reset contents after transition finishes (wait longer if hit animation is running)
+    const delay = hole.el.classList.contains("hit") ? 380 : 250;
     setTimeout(() => {
       if (!hole.up) {
         hole.critterEl.innerHTML = "";
         hole.kind = null;
       }
-    }, 250);
+    }, delay);
   }
 
   /* =========================================================================
@@ -1351,11 +1347,16 @@
     } else if (kind === "fork_mole") {
       hole.maxHp = 1;
       hole.state = { forkUp: true }; // Starts with fork raised
+      hole.el.classList.add("fork-up");
     }
     hole.hp = hole.maxHp;
 
     // Render initial SVG
     hole.critterEl.innerHTML = getCritterHTML(kind, { ...hole.state, hp: hole.hp });
+    
+    // Force browser reflow to guarantee CSS transition triggers (crucial when multiple elements render)
+    const child = hole.critterEl.firstElementChild;
+    if (child) void child.offsetHeight;
     
     // Pop up animation
     hole.el.classList.remove("hit");
@@ -1388,8 +1389,11 @@
       holes.forEach(hole => {
         if (hole.up && hole.kind === "fork_mole" && hole.hp > 0) {
           hole.state.forkUp = !hole.state.forkUp;
-          // Re-render
-          hole.critterEl.innerHTML = getCritterHTML("fork_mole", hole.state);
+          if (hole.state.forkUp) {
+            hole.el.classList.add("fork-up");
+          } else {
+            hole.el.classList.remove("fork-up");
+          }
         }
       });
     }, 700);
@@ -1451,6 +1455,10 @@
         hole.maxHp = (kind === "mole" || kind === "erizo") ? 1 : (kind === "helmet_mole" ? 2 : 3);
         hole.hp = hole.maxHp;
         hole.critterEl.innerHTML = getCritterHTML(kind, { ...hole.state, hp: hole.hp });
+
+        // Force browser reflow to guarantee CSS transition triggers (crucial in fast-spawning Horde Mode)
+        const child = hole.critterEl.firstElementChild;
+        if (child) void child.offsetHeight;
 
         hole.el.classList.remove("hit");
         hole.el.classList.add("up");
