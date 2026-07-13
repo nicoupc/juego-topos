@@ -540,27 +540,19 @@
     let eyesHTML = "";
     if (eyesType === "sparkle") {
       eyesHTML = `
-        <g class="critter-eye" style="transform-origin: 36px 46px;">
-          <circle cx="36" cy="46" r="4.5" fill="#2b1408"/>
-          <circle cx="34.5" cy="44.5" r="1.5" fill="#fff"/>
-        </g>
-        <g class="critter-eye" style="transform-origin: 64px 46px;">
-          <circle cx="64" cy="46" r="4.5" fill="#2b1408"/>
-          <circle cx="62.5" cy="44.5" r="1.5" fill="#fff"/>
-        </g>
+        <circle class="critter-eye" cx="36" cy="46" r="4.5" fill="#2b1408" style="transform-origin: 36px 46px;"/>
+        <circle class="critter-eye" cx="34.5" cy="44.5" r="1.5" fill="#fff" style="transform-origin: 36px 46px;"/>
+        <circle class="critter-eye" cx="64" cy="46" r="4.5" fill="#2b1408" style="transform-origin: 64px 46px;"/>
+        <circle class="critter-eye" cx="62.5" cy="44.5" r="1.5" fill="#fff" style="transform-origin: 64px 46px;"/>
       `;
     } else if (eyesType === "surprised") {
       eyesHTML = `
-        <g class="critter-eye" style="transform-origin: 36px 46px;">
-          <circle cx="36" cy="46" r="6.5" fill="#2b1408"/>
-          <circle cx="36" cy="46" r="4" fill="#ffa8a8"/>
-          <circle cx="35" cy="45" r="1" fill="#fff"/>
-        </g>
-        <g class="critter-eye" style="transform-origin: 64px 46px;">
-          <circle cx="64" cy="46" r="6.5" fill="#2b1408"/>
-          <circle cx="64" cy="46" r="4" fill="#ffa8a8"/>
-          <circle cx="63" cy="45" r="1" fill="#fff"/>
-        </g>
+        <circle class="critter-eye" cx="36" cy="46" r="6.5" fill="#2b1408" style="transform-origin: 36px 46px;"/>
+        <circle class="critter-eye" cx="36" cy="46" r="4" fill="#ffa8a8" style="transform-origin: 36px 46px;"/>
+        <circle class="critter-eye" cx="35" cy="45" r="1" fill="#fff" style="transform-origin: 36px 46px;"/>
+        <circle class="critter-eye" cx="64" cy="46" r="6.5" fill="#2b1408" style="transform-origin: 64px 46px;"/>
+        <circle class="critter-eye" cx="64" cy="46" r="4" fill="#ffa8a8" style="transform-origin: 64px 46px;"/>
+        <circle class="critter-eye" cx="63" cy="45" r="1" fill="#fff" style="transform-origin: 64px 46px;"/>
       `;
     } else { // normal
       eyesHTML = `
@@ -657,24 +649,16 @@
         <path d="M25 85 C25 35 75 35 75 85 C75 92 25 92 25 85 Z" fill="url(#erizoFace)" stroke="#301e10" stroke-width="2.5"/>
         
         <!-- Little Ears -->
-        <g class="erizo-ear" style="transform-origin: 28px 46px;">
-          <circle cx="28" cy="46" r="6" fill="#ffdcb8" stroke="#301e10" stroke-width="2"/>
-          <circle cx="28" cy="46" r="3" fill="#ffa8a8"/>
-        </g>
-        <g class="erizo-ear" style="transform-origin: 72px 46px;">
-          <circle cx="72" cy="46" r="6" fill="#ffdcb8" stroke="#301e10" stroke-width="2"/>
-          <circle cx="72" cy="46" r="3" fill="#ffa8a8"/>
-        </g>
+        <circle class="erizo-ear" cx="28" cy="46" r="6" fill="#ffdcb8" stroke="#301e10" stroke-width="2" style="transform-origin: 28px 46px;"/>
+        <circle class="erizo-ear" cx="28" cy="46" r="3" fill="#ffa8a8" style="transform-origin: 28px 46px;"/>
+        <circle class="erizo-ear" cx="72" cy="46" r="6" fill="#ffdcb8" stroke="#301e10" stroke-width="2" style="transform-origin: 72px 46px;"/>
+        <circle class="erizo-ear" cx="72" cy="46" r="3" fill="#ffa8a8" style="transform-origin: 72px 46px;"/>
 
         <!-- Hedgehog Eyes (Sparkles) -->
-        <g class="critter-eye" style="transform-origin: 40px 58px;">
-          <circle cx="40" cy="58" r="4.2" fill="#2d1d1d"/>
-          <circle cx="38.5" cy="56.5" r="1.5" fill="#fff"/>
-        </g>
-        <g class="critter-eye" style="transform-origin: 60px 58px;">
-          <circle cx="60" cy="58" r="4.2" fill="#2d1d1d"/>
-          <circle cx="58.5" cy="56.5" r="1.5" fill="#fff"/>
-        </g>
+        <circle class="critter-eye" cx="40" cy="58" r="4.2" fill="#2d1d1d" style="transform-origin: 40px 58px;"/>
+        <circle class="critter-eye" cx="38.5" cy="56.5" r="1.5" fill="#fff" style="transform-origin: 40px 58px;"/>
+        <circle class="critter-eye" cx="60" cy="58" r="4.2" fill="#2d1d1d" style="transform-origin: 60px 58px;"/>
+        <circle class="critter-eye" cx="58.5" cy="56.5" r="1.5" fill="#fff" style="transform-origin: 60px 58px;"/>
 
         <!-- Blushing Cheeks -->
         <circle cx="34" cy="66" r="4" fill="#ff7675" opacity="0.55"/>
@@ -711,27 +695,19 @@
         <path d="M25 85 C25 35 75 35 75 85 C75 92 25 92 25 85 Z" fill="url(#erizoFace)" stroke="#301e10" stroke-width="2.5"/>
         
         <!-- Big Round Mole Ears sticking out of the suit! -->
-        <g class="erizo-ear" style="transform-origin: 18px 38px;">
-          <circle cx="18" cy="38" r="10" fill="#734222" stroke="#2b1408" stroke-width="2.5"/>
-          <circle cx="18" cy="38" r="6" fill="#ffa8a8" stroke="#2b1408" stroke-width="1.5"/>
-        </g>
-        <g class="erizo-ear" style="transform-origin: 82px 38px;">
-          <circle cx="82" cy="38" r="10" fill="#734222" stroke="#2b1408" stroke-width="2.5"/>
-          <circle cx="82" cy="38" r="6" fill="#ffa8a8" stroke="#2b1408" stroke-width="1.5"/>
-        </g>
+        <circle class="erizo-ear" cx="18" cy="38" r="10" fill="#734222" stroke="#2b1408" stroke-width="2.5" style="transform-origin: 18px 38px;"/>
+        <circle class="erizo-ear" cx="18" cy="38" r="6" fill="#ffa8a8" stroke="#2b1408" stroke-width="1.5" style="transform-origin: 18px 38px;"/>
+        <circle class="erizo-ear" cx="82" cy="38" r="10" fill="#734222" stroke="#2b1408" stroke-width="2.5" style="transform-origin: 82px 38px;"/>
+        <circle class="erizo-ear" cx="82" cy="38" r="6" fill="#ffa8a8" stroke="#2b1408" stroke-width="1.5" style="transform-origin: 82px 38px;"/>
 
         <!-- Open suit face cutout showing the BROWN mole skin face inside instead of beige! -->
         <ellipse cx="50" cy="56" rx="20" ry="17" fill="url(#moleGrad)" stroke="#301e10" stroke-width="2"/>
 
         <!-- Eyes (Same sparkling eyes as erizo to confuse!) -->
-        <g class="critter-eye" style="transform-origin: 40px 54px;">
-          <circle cx="40" cy="54" r="4.2" fill="#2d1d1d"/>
-          <circle cx="38.5" cy="52.5" r="1.5" fill="#fff"/>
-        </g>
-        <g class="critter-eye" style="transform-origin: 60px 54px;">
-          <circle cx="60" cy="54" r="4.2" fill="#2d1d1d"/>
-          <circle cx="58.5" cy="52.5" r="1.5" fill="#fff"/>
-        </g>
+        <circle class="critter-eye" cx="40" cy="54" r="4.2" fill="#2d1d1d" style="transform-origin: 40px 54px;"/>
+        <circle class="critter-eye" cx="38.5" cy="52.5" r="1.5" fill="#fff" style="transform-origin: 40px 54px;"/>
+        <circle class="critter-eye" cx="60" cy="54" r="4.2" fill="#2d1d1d" style="transform-origin: 60px 54px;"/>
+        <circle class="critter-eye" cx="58.5" cy="52.5" r="1.5" fill="#fff" style="transform-origin: 60px 54px;"/>
 
         <!-- Blushing Cheeks -->
         <circle cx="34" cy="62" r="3.5" fill="#ff7675" opacity="0.6"/>
