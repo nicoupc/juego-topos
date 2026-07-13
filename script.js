@@ -121,7 +121,7 @@
   let lives = MAX_LIVES;
   let combo = 0;
   let multiplier = 1;
-  let difficulty = "facil";
+  let difficulty = "normal";
   let phase = 1; // 1 to 10
   let phaseHits = 0; // hits in current phase
   let isHorde = false;
@@ -996,7 +996,7 @@
     toggleSFX.classList.toggle("active", !mutedSFX);
 
     // Dificulty Chips
-    difficulty = localStorage.getItem("toposyerizos-difficulty") || "facil";
+    difficulty = localStorage.getItem("toposyerizos-difficulty") || "normal";
     diffChips.forEach(chip => {
       const active = chip.dataset.diff === difficulty;
       chip.classList.toggle("active", active);
@@ -1485,9 +1485,15 @@
     hole.el.classList.remove("hit");
     hole.el.classList.add("up");
 
-    // reaction/visible time
-    const minUp = cfg.baseMinUp - (phase * 60); // Speed up slightly as phases advance
-    const maxUp = cfg.baseMaxUp - (phase * 60);
+    // reaction/visible time (slower at the start, accelerates after phase 5)
+    let speedOffset = 0;
+    if (phase <= 5) {
+      speedOffset = 500 - (phase * 60); // Generous buffer that slowly decreases
+    } else {
+      speedOffset = -(phase - 6) * 60; // Accelerates from phase 6 to 10
+    }
+    const minUp = cfg.baseMinUp + speedOffset;
+    const maxUp = cfg.baseMaxUp + speedOffset;
     const visibleTime = minUp + Math.random() * (maxUp - minUp);
 
     // Schedule hiding
@@ -1503,8 +1509,11 @@
 
     const cfg = DIFFICULTIES[difficulty];
 
+    // Scale maximum active critters on the board based on phase for a smoother learning curve
+    const maxActiveForPhase = phase === 1 ? 1 : (phase <= 3 ? Math.min(cfg.maxActive, 2) : cfg.maxActive);
+
     // Check if we hit the limit of concurrent moles
-    if (activeCritterCount >= cfg.maxActive) {
+    if (activeCritterCount >= maxActiveForPhase) {
       // Re-schedule soon
       spawnTimeoutId = setTimeout(spawnLoop, 200);
       return;
@@ -1545,7 +1554,7 @@
     
     // Spawn the determined amount of critters with a small staggered delay
     for (let i = 0; i < amountToSpawn; i++) {
-      if (activeCritterCount >= cfg.maxActive) break;
+      if (activeCritterCount >= maxActiveForPhase) break;
       
       const idx = randomFreeHoleIndex();
       if (idx === -1) break;
