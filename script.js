@@ -2331,4 +2331,11 @@
   document.addEventListener("pointerdown", autoPlayCallback);
   document.addEventListener("click", autoPlayCallback);
 
+  // Testing & QA Hooks
+  window.__testHooks = {
+    changeProfile,
+    submitScoreToLeaderboard,
+    getPlayerId: () => playerId
+  };
+
 })();
