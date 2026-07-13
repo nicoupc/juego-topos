@@ -1051,64 +1051,132 @@
     profileViewRecord.textContent = record;
   }
 
-  async function fetchLeaderboard() {
+  // --- ROBUST LEADERBOARD API WRAPPERS ---
+  async function fetchWithTimeout(resource, options = {}) {
+    const { timeout = 4000 } = options;
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
     try {
-      const res = await fetch(`${LEADERBOARD_BIN_URL}?t=${Date.now()}`);
-      if (!res.ok) throw new Error("Leaderboard network error");
+      const response = await fetch(resource, {
+        ...options,
+        signal: controller.signal
+      });
+      clearTimeout(id);
+      return response;
+    } catch (error) {
+      clearTimeout(id);
+      throw error;
+    }
+  }
+
+  async function fetchWithRetry(url, options = {}, retries = 2, delay = 800) {
+    try {
+      const res = await fetchWithTimeout(url, options);
+      if (!res.ok) {
+        if (res.status === 429 && retries > 0) {
+          await new Promise(r => setTimeout(r, delay));
+          return fetchWithRetry(url, options, retries - 1, delay * 1.5);
+        }
+        throw new Error(`HTTP error ${res.status}`);
+      }
+      return res;
+    } catch (err) {
+      if (retries > 0) {
+        await new Promise(r => setTimeout(r, delay));
+        return fetchWithRetry(url, options, retries - 1, delay * 1.5);
+      }
+      throw err;
+    }
+  }
+
+  function renderLeaderboard(entries) {
+    if (!leaderboardList) return;
+    leaderboardList.innerHTML = "";
+    if (!entries || entries.length === 0) {
+      leaderboardList.innerHTML = `<div class="leaderboard-empty">Sin puntajes globales aún</div>`;
+      return;
+    }
+    
+    const limit = Math.min(entries.length, 50);
+    for (let i = 0; i < limit; i++) {
+      const entry = entries[i];
+      if (!entry || !entry.name) continue;
+      const namePart = entry.name;
+      const avatarPart = entry.avatar || "mole";
+      const isMe = entry.id ? (entry.id === playerId) : (namePart.trim().toLowerCase() === playerName.trim().toLowerCase());
       
-      const data = await res.json();
-      const entries = data.scores || [];
+      const row = document.createElement("div");
+      row.className = `leaderboard-row rank-${i+1} ${isMe ? "my-row" : ""}`;
       
-      if (leaderboardList) {
-        leaderboardList.innerHTML = "";
-        if (entries.length === 0) {
-          leaderboardList.innerHTML = `<div class="leaderboard-empty">Sin puntajes globales aún</div>`;
-        } else {
-          const limit = Math.min(entries.length, 50);
-          for (let i = 0; i < limit; i++) {
-            const entry = entries[i];
-            const namePart = entry.name;
-            const avatarPart = entry.avatar || "mole";
-            // Highlight my own row check (ID matching, fallback to name matching for older version scores)
-            const isMe = entry.id ? (entry.id === playerId) : (namePart.trim().toLowerCase() === playerName.trim().toLowerCase());
-            
-            const row = document.createElement("div");
-            row.className = `leaderboard-row rank-${i+1} ${isMe ? "my-row" : ""}`;
-            
-            let rankBadge = i + 1;
-            let rankClass = "";
-            if (i === 0) {
-              rankBadge = "🥇";
-              rankClass = "rank-1";
-            } else if (i === 1) {
-              rankBadge = "🥈";
-              rankClass = "rank-2";
-            } else if (i === 2) {
-              rankBadge = "🥉";
-              rankClass = "rank-3";
-            }
-            
-            let crownHTML = "";
-            if (i === 0) {
-              crownHTML = `<span class="leaderboard-crown">👑</span>`;
-            }
-            
-            row.innerHTML = `
-              <div class="leaderboard-rank ${rankClass}">${rankBadge}</div>
-              <div class="leaderboard-player">
-                <div class="leaderboard-player-avatar">${getAvatarSVG(avatarPart)}</div>
-                <span class="leaderboard-player-name" title="${namePart}">${namePart}</span>
-                ${crownHTML}
-              </div>
-              <div class="leaderboard-score">${entry.score}</div>
-            `;
-            leaderboardList.appendChild(row);
-          }
+      let rankBadge = i + 1;
+      let rankClass = "";
+      if (i === 0) {
+        rankBadge = "🥇";
+        rankClass = "rank-1";
+      } else if (i === 1) {
+        rankBadge = "🥈";
+        rankClass = "rank-2";
+      } else if (i === 2) {
+        rankBadge = "🥉";
+        rankClass = "rank-3";
+      }
+      
+      let crownHTML = "";
+      if (i === 0) {
+        crownHTML = `<span class="leaderboard-crown">👑</span>`;
+      }
+      
+      row.innerHTML = `
+        <div class="leaderboard-rank ${rankClass}">${rankBadge}</div>
+        <div class="leaderboard-player">
+          <div class="leaderboard-player-avatar">${getAvatarSVG(avatarPart)}</div>
+          <span class="leaderboard-player-name" title="${namePart}">${namePart}</span>
+          ${crownHTML}
+        </div>
+        <div class="leaderboard-score">${entry.score}</div>
+      `;
+      leaderboardList.appendChild(row);
+    }
+  }
+
+  async function fetchLeaderboard() {
+    let cached = null;
+    try {
+      const cacheData = localStorage.getItem("toposyerizos-leaderboard-cache");
+      if (cacheData) {
+        cached = JSON.parse(cacheData);
+        if (Array.isArray(cached)) {
+          renderLeaderboard(cached);
         }
       }
+    } catch (e) {
+      console.warn("Failed to load leaderboard cache:", e);
+    }
+
+    if (!cached && leaderboardList) {
+      leaderboardList.innerHTML = `<div class="leaderboard-loading">Cargando ranking...</div>`;
+    }
+
+    try {
+      const res = await fetchWithRetry(`${LEADERBOARD_BIN_URL}?t=${Date.now()}`);
+      const text = await res.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (parseErr) {
+        throw new Error("Invalid JSON response from server");
+      }
+
+      const entries = data.scores || [];
+      if (!Array.isArray(entries)) {
+        throw new Error("Invalid scores format from server");
+      }
+
+      localStorage.setItem("toposyerizos-leaderboard-cache", JSON.stringify(entries));
+      renderLeaderboard(entries);
     } catch (err) {
       console.error("Error fetching leaderboard:", err);
-      if (leaderboardList) {
+      if (!cached && leaderboardList) {
         leaderboardList.innerHTML = `<div class="leaderboard-loading">Error al conectar ranking</div>`;
       }
     }
@@ -1117,20 +1185,22 @@
   async function submitScoreToLeaderboard(score) {
     if (score <= 0) return;
     try {
-      // 1. Fetch current scores
-      const res = await fetch(`${LEADERBOARD_BIN_URL}?t=${Date.now()}`);
-      if (!res.ok) throw new Error("Load bin error");
-      const data = await res.json();
+      const res = await fetchWithRetry(`${LEADERBOARD_BIN_URL}?t=${Date.now()}`);
+      const text = await res.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (parseErr) {
+        throw new Error("Invalid JSON on fetch before submit");
+      }
+      
       const scoresList = data.scores || [];
       
-      // 2. Add or update score
-      // Match by unique ID first
       let existingIndex = scoresList.findIndex(s => s.id === playerId);
       if (existingIndex === -1) {
-        // Fallback: match by name if entry has no ID (migration from old version)
         existingIndex = scoresList.findIndex(s => s.name.trim().toLowerCase() === playerName.trim().toLowerCase() && !s.id);
         if (existingIndex !== -1) {
-          scoresList[existingIndex].id = playerId; // Claim it
+          scoresList[existingIndex].id = playerId;
         }
       }
       
@@ -1140,7 +1210,6 @@
           scoresList[existingIndex].avatar = playerAvatar;
           scoresList[existingIndex].date = new Date().toLocaleDateString();
         }
-        // Update name in database in case player renamed
         scoresList[existingIndex].name = playerName.trim();
       } else {
         scoresList.push({
@@ -1152,12 +1221,13 @@
         });
       }
       
-      // 3. Sort and slice
       scoresList.sort((a, b) => b.score - a.score);
       const topScores = scoresList.slice(0, 50);
       
-      // 4. Save back
-      await fetch(LEADERBOARD_BIN_URL, {
+      localStorage.setItem("toposyerizos-leaderboard-cache", JSON.stringify(topScores));
+      renderLeaderboard(topScores);
+
+      await fetchWithRetry(LEADERBOARD_BIN_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -1166,7 +1236,6 @@
       });
       
       console.log("Submitted score to JSON storage successfully!");
-      fetchLeaderboard();
     } catch (err) {
       console.error("Error submitting score:", err);
     }
@@ -1185,27 +1254,28 @@
     renderProfileUI();
     
     try {
-      // 1. Fetch current scores
-      const res = await fetch(`${LEADERBOARD_BIN_URL}?t=${Date.now()}`);
-      if (!res.ok) throw new Error("Load bin error");
-      const data = await res.json();
+      const res = await fetchWithRetry(`${LEADERBOARD_BIN_URL}?t=${Date.now()}`);
+      const text = await res.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (parseErr) {
+        throw new Error("Invalid JSON on fetch before profile change");
+      }
+      
       let scoresList = data.scores || [];
       
-      // 2. Find player's entry score in the DB to preserve it
-      // Match by unique ID first
       let entryIndex = scoresList.findIndex(s => s.id === playerId);
       if (entryIndex === -1) {
-        // Fallback: match by name if entry has no ID (migration from old version)
         entryIndex = scoresList.findIndex(s => s.name.trim().toLowerCase() === oldName.trim().toLowerCase() && !s.id);
         if (entryIndex !== -1) {
-          scoresList[entryIndex].id = playerId; // Claim it
+          scoresList[entryIndex].id = playerId;
         }
       }
       
       let dbScore = 0;
       if (entryIndex !== -1) {
         dbScore = scoresList[entryIndex].score;
-        // Keep name and avatar updated
         scoresList[entryIndex].name = cleanedNewName;
         scoresList[entryIndex].avatar = newAvatar;
       }
@@ -1213,7 +1283,6 @@
       const localRecord = getLocalRecord();
       const finalScore = Math.max(dbScore, localRecord);
       
-      // Sync higher score back to local storage so the profile card reflects it
       if (dbScore > localRecord) {
         saveHighscore(dbScore);
         renderProfileUI();
@@ -1223,7 +1292,6 @@
         if (entryIndex !== -1) {
           scoresList[entryIndex].score = finalScore;
         } else {
-          // If no existing entry was found/claimed, push a new one
           scoresList.push({
             id: playerId,
             name: cleanedNewName,
@@ -1233,11 +1301,13 @@
           });
         }
         
-        // Sort and save
         scoresList.sort((a, b) => b.score - a.score);
         const topScores = scoresList.slice(0, 50);
         
-        await fetch(LEADERBOARD_BIN_URL, {
+        localStorage.setItem("toposyerizos-leaderboard-cache", JSON.stringify(topScores));
+        renderLeaderboard(topScores);
+
+        await fetchWithRetry(LEADERBOARD_BIN_URL, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -1245,11 +1315,8 @@
           body: JSON.stringify({ scores: topScores })
         });
       }
-      
-      fetchLeaderboard();
     } catch (e) {
       console.error("Error updating profile in JSON storage:", e);
-      fetchLeaderboard();
     }
   }
 
