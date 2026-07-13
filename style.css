@@ -1726,7 +1726,7 @@ body {
 
 /* Responsive Overrides */
 @media (max-width: 1149px) {
-  #menuScreen {
+  #menuScreen.active {
     display: flex;
     flex-direction: column;
     align-items: center;
