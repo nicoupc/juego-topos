@@ -1615,7 +1615,7 @@ body {
   flex-direction: column;
   gap: 6px;
   margin-top: 6px;
-  max-height: 520px; /* displays ~10 rows on tall screens */
+  max-height: 300px; /* displays ~5 rows */
   overflow-y: scroll;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE 10+ */
