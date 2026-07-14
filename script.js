@@ -1202,6 +1202,11 @@
 
   async function submitScoreToLeaderboard(score) {
     if (score <= 0) return;
+    // Prevent submitting the default anonymous name to keep the global leaderboard clean
+    if (!playerName || playerName.trim() === "" || playerName.trim().toLowerCase() === "jugador anónimo") {
+      console.log("Leaderboard: score submission skipped for anonymous player profile");
+      return;
+    }
     try {
       const res = await fetchWithRetry(`${LEADERBOARD_BIN_URL}?t=${Date.now()}`);
       const text = await res.text();
@@ -1256,6 +1261,13 @@
       console.log("Submitted score to JSON storage successfully!");
     } catch (err) {
       console.error("Error submitting score:", err);
+    }
+  }
+
+  function syncLocalRecordWithServer() {
+    const record = getLocalRecord();
+    if (record > 0) {
+      submitScoreToLeaderboard(record);
     }
   }
 
@@ -2549,6 +2561,7 @@
   updateMainHighscoreLabel();
   renderProfileUI();
   fetchLeaderboard();
+  syncLocalRecordWithServer();
   
   // Interactive Menu Critter
   initMenuCritterEvents();
