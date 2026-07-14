@@ -1015,17 +1015,29 @@
   }
 
   function getHighscores() {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return [];
+      return parsed.filter(item => item && typeof item.score === "number");
+    } catch (e) {
+      console.error("Error reading highscores:", e);
+      return [];
+    }
   }
 
   function saveHighscore(newScore) {
-    let scores = getHighscores();
-    scores.push({ score: newScore, date: new Date().toLocaleDateString() });
-    scores.sort((a, b) => b.score - a.score);
-    scores = scores.slice(0, MAX_HIGHSCORES);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(scores));
-    highscores = scores;
+    try {
+      let scores = getHighscores();
+      scores.push({ score: newScore, date: new Date().toLocaleDateString() });
+      scores.sort((a, b) => b.score - a.score);
+      scores = scores.slice(0, MAX_HIGHSCORES);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(scores));
+      highscores = scores;
+    } catch (e) {
+      console.error("Error saving highscore:", e);
+    }
   }
 
   function getAvatarSVG(kind) {
@@ -1292,6 +1304,7 @@
       if (dbScore > localRecord) {
         saveHighscore(dbScore);
         renderProfileUI();
+        updateMainHighscoreLabel();
       }
       
       if (finalScore > 0) {
@@ -2122,6 +2135,13 @@
   }
 
   function quitToMenu() {
+    // Save and submit the current score if the game was active
+    if (running && score > 0) {
+      saveHighscore(score);
+      submitScoreToLeaderboard(score);
+      renderProfileUI();
+    }
+
     running = false;
     paused = false;
     clearTimeout(spawnTimeoutId);
