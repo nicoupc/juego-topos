@@ -1380,30 +1380,32 @@
       return "mole";
     }
     
-    if (currentPhase === 5) {
-      // 5 kinds present
-      if (roll < 0.20) return "fork_mole";
-      if (roll < 0.40) return "disguise_mole";
-      if (roll < 0.60) return "bucket_mole";
-      if (roll < 0.80) return "helmet_mole";
+    if (currentPhase === 5 || currentPhase === 6) {
+      // Powerup bubbles start appearing from Phase 5
+      if (roll < 0.03) return "bubble_heart";
+      if (roll < 0.06) return "bubble_hammer";
+      
+      const subRoll = Math.random();
+      if (currentPhase === 5) {
+        if (subRoll < 0.20) return "fork_mole";
+        if (subRoll < 0.40) return "disguise_mole";
+        if (subRoll < 0.60) return "bucket_mole";
+        if (subRoll < 0.80) return "helmet_mole";
+        return "mole";
+      }
+      // Phase 6: adds zombie
+      if (subRoll < 0.15) return "zombie_mole";
+      if (subRoll < 0.30) return "fork_mole";
+      if (subRoll < 0.50) return "disguise_mole";
+      if (subRoll < 0.65) return "bucket_mole";
+      if (subRoll < 0.80) return "helmet_mole";
       return "mole";
     }
 
-    if (currentPhase === 6) {
-      // 6 kinds present
-      if (roll < 0.15) return "zombie_mole";
-      if (roll < 0.30) return "fork_mole";
-      if (roll < 0.50) return "disguise_mole";
-      if (roll < 0.65) return "bucket_mole";
-      if (roll < 0.80) return "helmet_mole";
-      return "mole";
-    }
-
-    // Phases 7 to 10: Includes powerups and all variants
+    // Phases 7 to 10: Higher powerup chance and all variants
     if (currentPhase >= 7) {
-      // 8% chance of powerup bubbles
-      if (roll < 0.04) return "bubble_heart";
-      if (roll < 0.08) return "bubble_hammer";
+      if (roll < 0.05) return "bubble_heart";
+      if (roll < 0.10) return "bubble_hammer";
       
       const subRoll = Math.random();
       if (subRoll < 0.20) return "zombie_mole";
@@ -1892,7 +1894,7 @@
       // Progress Combo
       combo++;
       const prevMult = multiplier;
-      multiplier = Math.min(5, 1 + Math.floor(combo / 5));
+      multiplier = Math.min(3, 1 + Math.floor(combo / 5));
       if (multiplier > prevMult) {
         playSFX("victory_chime");
         showToast(`¡Combo x${multiplier}!`);
@@ -2013,10 +2015,16 @@
     const pct = Math.min(100, (phaseHits / target) * 100);
     phaseProgress.style.width = `${pct}%`;
 
-    // Multiplier combo
+    // Multiplier combo badge + hammer cursor scaling
+    comboBadge.classList.remove("combo-x2", "combo-x3");
+    if (hammerCursor) hammerCursor.classList.remove("combo-x2", "combo-x3");
+    
     if (multiplier > 1) {
       comboBadge.hidden = false;
       comboBadge.querySelector("span").textContent = `x${multiplier}`;
+      const comboClass = `combo-x${multiplier}`;
+      comboBadge.classList.add(comboClass);
+      if (hammerCursor) hammerCursor.classList.add(comboClass);
     } else {
       comboBadge.hidden = true;
     }
