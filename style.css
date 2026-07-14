@@ -1550,7 +1550,7 @@ body {
   right: 20px;
   top: 20px;
   z-index: 100;
-  width: 320px;
+  width: 360px;
   background: #f8edd1;
   border: 6px solid var(--wood-dark);
   border-radius: 18px;
@@ -1645,8 +1645,8 @@ body {
 }
 
 .leaderboard-row.rank-1 .leaderboard-player-avatar {
-  width: 32px;
-  height: 32px;
+  width: 46px;
+  height: 46px;
   border: 2.5px solid #d4af37;
 }
 
@@ -1654,6 +1654,7 @@ body {
   font-size: 1.05rem;
   font-weight: 900 !important;
   color: #3d2300 !important;
+  max-width: 175px;
 }
 
 .leaderboard-crown {
@@ -1683,8 +1684,8 @@ body {
 }
 
 .leaderboard-row.rank-2 .leaderboard-player-avatar {
-  width: 34px;
-  height: 34px;
+  width: 42px;
+  height: 42px;
   border: 2px solid #a0a0a0;
 }
 
@@ -1710,8 +1711,8 @@ body {
 }
 
 .leaderboard-row.rank-3 .leaderboard-player-avatar {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border: 2px solid #a05c36;
 }
 
@@ -1946,7 +1947,7 @@ body {
 
 .leaderboard-header {
   display: grid;
-  grid-template-columns: 55px 1fr 75px;
+  grid-template-columns: 40px 1fr 70px;
   font-size: 0.72rem;
   font-weight: 700;
   color: #7d441c;
@@ -1983,7 +1984,7 @@ body {
 
 .leaderboard-row {
   display: grid;
-  grid-template-columns: 30px 1fr 60px;
+  grid-template-columns: 40px 1fr 70px;
   align-items: center;
   padding: 6px 8px;
   background: rgba(255, 255, 255, 0.35);
@@ -2021,8 +2022,8 @@ body {
 }
 
 .leaderboard-player-avatar {
-  width: 30px;
-  height: 30px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background: #fff;
   border: 1.5px solid var(--wood-medium);
@@ -2044,7 +2045,7 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 150px;
+  max-width: 170px;
   flex-grow: 1;
 }
 
@@ -2459,7 +2460,7 @@ body {
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
     width: 92% !important;
-    max-width: 340px !important;
+    max-width: 365px !important;
     z-index: 200 !important;
     margin: 0 !important;
     animation: modalPopUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
