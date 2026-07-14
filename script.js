@@ -1088,8 +1088,18 @@
   }
 
   async function fetchWithRetry(url, options = {}, retries = 2, delay = 800) {
+    const finalHeaders = {
+      "Cache-Control": "no-cache, no-store, must-revalidate",
+      "Pragma": "no-cache",
+      "Expires": "0",
+      ...options.headers
+    };
+    const finalOptions = {
+      ...options,
+      headers: finalHeaders
+    };
     try {
-      const res = await fetchWithTimeout(url, options);
+      const res = await fetchWithTimeout(url, finalOptions);
       if (!res.ok) {
         if (res.status === 429 && retries > 0) {
           await new Promise(r => setTimeout(r, delay));
