@@ -2000,6 +2000,7 @@ body {
 .leaderboard-header {
   display: grid;
   grid-template-columns: 34px 1fr 58px;
+  column-gap: 8px;
   font-size: 0.72rem;
   font-weight: 700;
   color: #7d441c;
@@ -2007,6 +2008,10 @@ body {
   padding-bottom: 4px;
   border-bottom: 2px solid #b1794b;
   margin-bottom: 6px;
+}
+
+.leaderboard-header span:first-child {
+  text-align: center;
 }
 
 .leaderboard-header span:last-child {
@@ -2037,6 +2042,7 @@ body {
 .leaderboard-row {
   display: grid;
   grid-template-columns: 34px 1fr 58px;
+  column-gap: 8px;
   align-items: center;
   padding: 6px 8px;
   background: rgba(255, 255, 255, 0.35);
