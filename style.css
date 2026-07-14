@@ -1551,6 +1551,8 @@ body {
   top: 20px;
   z-index: 100;
   width: 360px;
+  max-height: calc(100vh - 50px);
+  overflow-y: auto;
   background: #f8edd1;
   border: 6px solid var(--wood-dark);
   border-radius: 18px;
@@ -1613,7 +1615,7 @@ body {
   flex-direction: column;
   gap: 6px;
   margin-top: 6px;
-  max-height: 290px; /* displays ~5 rows smoothly */
+  max-height: 520px; /* displays ~10 rows on tall screens */
   overflow-y: scroll;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE 10+ */
@@ -1942,7 +1944,7 @@ body {
   flex-direction: column;
   flex-grow: 1;
   overflow: hidden;
-  max-height: 250px;
+  max-height: 60vh;
 }
 
 .leaderboard-header {
