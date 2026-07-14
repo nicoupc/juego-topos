@@ -1680,7 +1680,7 @@ body {
   border: 3px solid #d4af37 !important;
   box-shadow: 0 0 15px rgba(255, 215, 0, 0.8) !important;
   animation: goldGlow 2s ease-in-out infinite alternate;
-  padding: 10px 12px;
+  padding: 8px 8px;
 }
 
 @keyframes goldGlow {
@@ -1695,13 +1695,13 @@ body {
 }
 
 .leaderboard-row.rank-1 .leaderboard-player-avatar {
-  width: 46px;
-  height: 46px;
+  width: 42px;
+  height: 42px;
   border: 2.5px solid #d4af37;
 }
 
 .leaderboard-row.rank-1 .leaderboard-player-name {
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   font-weight: 900 !important;
   color: #3d2300 !important;
   max-width: 175px;
@@ -1725,7 +1725,7 @@ body {
   background: linear-gradient(135deg, #fbfbfb 0%, #e1e1e1 50%, #c8c8c8 100%) !important;
   border: 2.5px solid #a0a0a0 !important;
   box-shadow: 0 0 10px rgba(160, 160, 160, 0.5) !important;
-  padding: 8px 10px;
+  padding: 7px 8px;
 }
 
 .leaderboard-row.rank-2 .leaderboard-rank {
@@ -1752,7 +1752,7 @@ body {
   background: linear-gradient(135deg, #faebe3 0%, #dca487 50%, #c67f59 100%) !important;
   border: 2.5px solid #a05c36 !important;
   box-shadow: 0 0 8px rgba(198, 127, 89, 0.4) !important;
-  padding: 7px 9px;
+  padding: 6px 8px;
 }
 
 .leaderboard-row.rank-3 .leaderboard-rank {
@@ -1999,7 +1999,7 @@ body {
 
 .leaderboard-header {
   display: grid;
-  grid-template-columns: 40px 1fr 70px;
+  grid-template-columns: 34px 1fr 58px;
   font-size: 0.72rem;
   font-weight: 700;
   color: #7d441c;
@@ -2036,7 +2036,7 @@ body {
 
 .leaderboard-row {
   display: grid;
-  grid-template-columns: 40px 1fr 70px;
+  grid-template-columns: 34px 1fr 58px;
   align-items: center;
   padding: 6px 8px;
   background: rgba(255, 255, 255, 0.35);
