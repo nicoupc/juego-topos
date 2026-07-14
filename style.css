@@ -1496,8 +1496,8 @@ body {
 }
 
 .floating-profile-badge .profile-avatar-badge {
-  width: 72px;
-  height: 72px;
+  width: 84px;
+  height: 84px;
   border-radius: 50%;
   background: #fff;
   border: 3.5px solid var(--wood-dark);
@@ -1926,8 +1926,8 @@ body {
 }
 
 .avatar-option {
-  width: 54px;
-  height: 54px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   background: #fff;
   border: 2.5px solid var(--wood-dark);
