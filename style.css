@@ -2158,6 +2158,79 @@ body {
   100% { transform: scale(1.05); }
 }
 
+/* GAME OVER NAME PROMPT BANNER */
+.end-name-prompt {
+  background: rgba(255, 255, 255, 0.45);
+  border: 2px dashed #b1794b;
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin: 10px 0 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.end-name-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #4a2d18;
+}
+
+.end-name-input-group {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.end-name-input {
+  flex: 1;
+  border: 2px solid var(--wood-medium);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #3d2300;
+  background: #fff;
+  outline: none;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.end-name-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 6px rgba(255, 215, 0, 0.6);
+}
+
+.end-name-btn {
+  background: linear-gradient(to bottom, #72ba38, #4f8725);
+  color: #fff;
+  border: 2px solid var(--wood-dark);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 900;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: 0 2px 0 var(--wood-dark);
+  touch-action: manipulation;
+  white-space: nowrap;
+  transition: transform 0.1s ease, background 0.2s ease;
+}
+
+.end-name-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 var(--wood-dark);
+}
+
+.end-name-btn.saved {
+  background: linear-gradient(to bottom, #2ecc71, #27ae60);
+}
+
 /* BUTTONS STYLING IN MODALS */
 .btn {
   border: 3px solid var(--wood-dark);

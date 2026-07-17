@@ -109,6 +109,8 @@
   const endTitle = document.getElementById("endTitle");
   const finalScoreEl = document.getElementById("finalScore");
   const newRecordEl = document.getElementById("newRecord");
+  const endInputName = document.getElementById("endInputName");
+  const btnSaveEndName = document.getElementById("btnSaveEndName");
 
   const toastEl = document.getElementById("toast");
 
@@ -157,7 +159,18 @@
     localStorage.setItem("toposyerizos-playerid", playerId);
   }
   
-  let playerName = localStorage.getItem("toposyerizos-playername") || "Jugador Anónimo";
+  function generateRandomName() {
+    const prefixes = ["TopoNinja", "SuperTopo", "TopoCazador", "TopoVeloz", "TopoMaster", "TopoPro", "TopoFrenzy", "TopoLuchador", "TopoRey", "TopoHeroe"];
+    const randomPrefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+    const randomNum = Math.floor(100 + Math.random() * 900);
+    return `${randomPrefix}#${randomNum}`;
+  }
+
+  let playerName = localStorage.getItem("toposyerizos-playername");
+  if (!playerName || playerName.trim() === "" || playerName.trim().toLowerCase() === "jugador anónimo") {
+    playerName = generateRandomName();
+    localStorage.setItem("toposyerizos-playername", playerName);
+  }
   let playerAvatar = localStorage.getItem("toposyerizos-playeravatar") || "mole";
   const AVATAR_LIST = ["mole", "erizo", "helmet_mole", "disguise_mole", "bucket_mole", "fork_mole", "zombie_mole"];
   let selectedAvatarIndex = AVATAR_LIST.indexOf(playerAvatar);
@@ -1212,10 +1225,9 @@
 
   async function submitScoreToLeaderboard(score) {
     if (score <= 0) return;
-    // Prevent submitting the default anonymous name to keep the global leaderboard clean
     if (!playerName || playerName.trim() === "" || playerName.trim().toLowerCase() === "jugador anónimo") {
-      console.log("Leaderboard: score submission skipped for anonymous player profile");
-      return;
+      playerName = generateRandomName();
+      localStorage.setItem("toposyerizos-playername", playerName);
     }
     try {
       const res = await fetchWithRetry(`${LEADERBOARD_BIN_URL}?t=${Date.now()}`);
@@ -2248,6 +2260,12 @@
 
     finalScoreEl.textContent = String(score);
     newRecordEl.hidden = !isNewRecord;
+
+    if (endInputName && btnSaveEndName) {
+      endInputName.value = playerName;
+      btnSaveEndName.textContent = "Guardar";
+      btnSaveEndName.classList.remove("saved");
+    }
     
     endOverlay.hidden = false;
   }
@@ -2447,6 +2465,37 @@
   // Game over events
   retryBtn.addEventListener("click", startGame);
   endQuitBtn.addEventListener("click", quitToMenu);
+
+  function handleSaveEndName() {
+    if (!endInputName) return;
+    const nameVal = endInputName.value.trim();
+    if (!nameVal) {
+      showToast("¡El nombre no puede estar vacío!");
+      return;
+    }
+    if (nameVal.includes("|") || nameVal.includes("*")) {
+      showToast("Caracteres | y * no permitidos.");
+      return;
+    }
+    
+    changeProfile(nameVal, playerAvatar);
+    showToast("¡Nombre guardado en el Ranking! 🏆");
+    if (btnSaveEndName) {
+      btnSaveEndName.textContent = "✓ Guardado";
+      btnSaveEndName.classList.add("saved");
+    }
+  }
+
+  if (btnSaveEndName) {
+    btnSaveEndName.addEventListener("click", handleSaveEndName);
+  }
+  if (endInputName) {
+    endInputName.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        handleSaveEndName();
+      }
+    });
+  }
 
 
 
