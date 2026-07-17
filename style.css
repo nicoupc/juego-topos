@@ -1598,7 +1598,8 @@ body {
   right: 20px;
   top: 20px;
   z-index: 100;
-  width: 360px;
+  width: 390px;
+  max-width: min(95vw, 390px);
   max-height: calc(100vh - 50px);
   overflow-y: auto;
   background: #f8edd1;
@@ -1701,19 +1702,21 @@ body {
 }
 
 .leaderboard-row.rank-1 .leaderboard-player-name {
-  font-size: 0.95rem;
+  font-size: clamp(0.82rem, 2.5vw, 0.95rem);
   font-weight: 900 !important;
   color: #3d2300 !important;
-  max-width: 175px;
+  letter-spacing: -0.01em;
 }
 
 .leaderboard-crown {
-  font-size: 0.95rem;
-  flex-shrink: 0;
-  vertical-align: middle;
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.9rem;
   line-height: 1;
-  margin-left: 2px;
-  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
+  filter: drop-shadow(0 1.5px 1.5px rgba(0,0,0,0.3));
+  pointer-events: none;
 }
 
 .leaderboard-row.rank-1 .leaderboard-score {
@@ -1999,7 +2002,7 @@ body {
 
 .leaderboard-header {
   display: grid;
-  grid-template-columns: 34px 1fr 58px;
+  grid-template-columns: 42px 1fr 58px;
   column-gap: 8px;
   font-size: 0.72rem;
   font-weight: 700;
@@ -2041,7 +2044,7 @@ body {
 
 .leaderboard-row {
   display: grid;
-  grid-template-columns: 34px 1fr 58px;
+  grid-template-columns: 42px 1fr 58px;
   column-gap: 8px;
   align-items: center;
   padding: 6px 8px;
@@ -2066,6 +2069,7 @@ body {
   width: 25px;
   height: 25px;
   border-radius: 50%;
+  position: relative;
 }
 
 .leaderboard-rank.rank-1 { background: #ffd700; color: #5c3b00; box-shadow: 0 2px 0 #cc9a00; }
@@ -2099,12 +2103,13 @@ body {
 
 .leaderboard-player-name {
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: clamp(0.78rem, 2.3vw, 0.9rem);
+  letter-spacing: -0.01em;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 170px;
   flex-grow: 1;
+  min-width: 0;
 }
 
 .leaderboard-score {

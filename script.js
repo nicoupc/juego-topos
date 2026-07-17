@@ -1171,11 +1171,10 @@
       }
       
       row.innerHTML = `
-        <div class="leaderboard-rank ${rankClass}">${rankBadge}</div>
+        <div class="leaderboard-rank ${rankClass}">${rankBadge}${crownHTML}</div>
         <div class="leaderboard-player">
           <div class="leaderboard-player-avatar">${getAvatarSVG(avatarPart)}</div>
           <span class="leaderboard-player-name" title="${namePart}">${namePart}</span>
-          ${crownHTML}
         </div>
         <div class="leaderboard-score">${entry.score}</div>
       `;
