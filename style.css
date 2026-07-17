@@ -1459,7 +1459,8 @@ body {
   left: 20px;
   top: 20px;
   z-index: 100;
-  width: 320px;
+  width: 340px;
+  max-width: min(94vw, 340px);
   background: #f8edd1;
   border: 6px solid var(--wood-dark) !important;
   border-radius: 18px;
@@ -1467,7 +1468,7 @@ body {
     0 8px 0 var(--wood-dark), 
     0 12px 20px rgba(0,0,0,0.4), 
     inset 0 0 15px rgba(0,0,0,0.15);
-  padding: 14px 16px;
+  padding: 12px 14px;
   box-sizing: border-box;
   font-family: 'Fredoka', sans-serif;
   color: #4a2d18;
@@ -1490,14 +1491,15 @@ body {
 .floating-profile-badge .profile-view-mode {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
   position: relative;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .floating-profile-badge .profile-avatar-badge {
-  width: 84px;
-  height: 84px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   background: #fff;
   border: 3.5px solid var(--wood-dark);
@@ -1518,12 +1520,19 @@ body {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .floating-profile-badge .profile-name {
-  font-size: 1.25rem;
+  font-size: clamp(0.92rem, 3.6vw, 1.15rem);
   font-weight: 900;
   color: #4a2d18;
+  letter-spacing: -0.01em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
 }
 
 .floating-profile-badge .profile-highscore {
@@ -1805,7 +1814,7 @@ body {
     top: auto;
     margin: 10px auto 25px auto;
     width: 92%;
-    max-width: 320px;
+    max-width: 340px;
     z-index: 10;
     order: 1;
   }
@@ -1831,7 +1840,7 @@ body {
 @media (max-width: 900px) {
   .floating-profile-badge {
     width: 92%;
-    max-width: 320px;
+    max-width: 340px;
   }
 }
 
