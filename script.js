@@ -1302,6 +1302,7 @@
     playerAvatar = newAvatar;
     localStorage.setItem("toposyerizos-playername", cleanedNewName);
     localStorage.setItem("toposyerizos-playeravatar", newAvatar);
+    localStorage.setItem("toposyerizos-is-custom-name", "true");
     
     renderProfileUI();
     
@@ -2261,9 +2262,14 @@
     finalScoreEl.textContent = String(score);
     newRecordEl.hidden = !isNewRecord;
 
-    if (endInputName && btnSaveEndName) {
+    const endNamePrompt = document.getElementById("endNamePrompt");
+    const isCustomName = localStorage.getItem("toposyerizos-is-custom-name") === "true";
+    if (endNamePrompt) {
+      endNamePrompt.hidden = isCustomName;
+    }
+    if (endInputName && btnSaveEndName && !isCustomName) {
       endInputName.value = playerName;
-      btnSaveEndName.textContent = "Guardar";
+      btnSaveEndName.textContent = "Guardar mi Nombre";
       btnSaveEndName.classList.remove("saved");
     }
     
@@ -2479,11 +2485,16 @@
     }
     
     changeProfile(nameVal, playerAvatar);
+    localStorage.setItem("toposyerizos-is-custom-name", "true");
     showToast("¡Nombre guardado en el Ranking! 🏆");
     if (btnSaveEndName) {
-      btnSaveEndName.textContent = "✓ Guardado";
+      btnSaveEndName.textContent = "✓ ¡Guardado!";
       btnSaveEndName.classList.add("saved");
     }
+    const endNamePrompt = document.getElementById("endNamePrompt");
+    setTimeout(() => {
+      if (endNamePrompt) endNamePrompt.hidden = true;
+    }, 1200);
   }
 
   if (btnSaveEndName) {

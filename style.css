@@ -2164,10 +2164,10 @@ body {
   border: 2px dashed #b1794b;
   border-radius: 12px;
   padding: 10px 12px;
-  margin: 10px 0 16px 0;
+  margin: 10px 0 14px 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   align-items: center;
   box-sizing: border-box;
   width: 100%;
@@ -2177,20 +2177,22 @@ body {
   font-size: 0.85rem;
   font-weight: 700;
   color: #4a2d18;
+  text-align: center;
 }
 
 .end-name-input-group {
   display: flex;
-  gap: 6px;
+  flex-direction: column;
+  gap: 8px;
   width: 100%;
   box-sizing: border-box;
 }
 
 .end-name-input {
-  flex: 1;
+  width: 100%;
   border: 2px solid var(--wood-medium);
   border-radius: 8px;
-  padding: 6px 10px;
+  padding: 8px 10px;
   font-family: 'Fredoka', sans-serif;
   font-weight: 700;
   font-size: 0.95rem;
@@ -2207,23 +2209,25 @@ body {
 }
 
 .end-name-btn {
+  width: 100%;
   background: linear-gradient(to bottom, #72ba38, #4f8725);
   color: #fff;
   border: 2px solid var(--wood-dark);
   border-radius: 8px;
-  padding: 6px 14px;
+  padding: 8px 14px;
   font-family: 'Fredoka', sans-serif;
   font-weight: 900;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   cursor: pointer;
-  box-shadow: 0 2px 0 var(--wood-dark);
+  box-shadow: 0 3px 0 var(--wood-dark);
   touch-action: manipulation;
   white-space: nowrap;
+  box-sizing: border-box;
   transition: transform 0.1s ease, background 0.2s ease;
 }
 
 .end-name-btn:active {
-  transform: translateY(1px);
+  transform: translateY(2px);
   box-shadow: 0 1px 0 var(--wood-dark);
 }
 
