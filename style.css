@@ -1690,8 +1690,10 @@ body {
 }
 
 .leaderboard-row.rank-1 .leaderboard-rank {
-  font-size: 1.4rem !important;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.25);
+  width: 32px;
+  height: 32px;
+  font-size: 1.65rem !important;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.3);
   font-weight: 900 !important;
 }
 
@@ -1710,13 +1712,19 @@ body {
 
 .leaderboard-crown {
   position: absolute;
-  top: -11px;
+  top: -15px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 0.9rem;
+  font-size: 1.25rem;
   line-height: 1;
-  filter: drop-shadow(0 1.5px 1.5px rgba(0,0,0,0.3));
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.35)) drop-shadow(0 0 5px rgba(255,215,0,0.8));
   pointer-events: none;
+  animation: crownFloat 2s ease-in-out infinite alternate;
+}
+
+@keyframes crownFloat {
+  0% { transform: translateX(-50%) translateY(0); }
+  100% { transform: translateX(-50%) translateY(-2px); }
 }
 
 .leaderboard-row.rank-1 .leaderboard-score {
