@@ -170,6 +170,9 @@
   if (!playerName || playerName.trim() === "" || playerName.trim().toLowerCase() === "jugador anónimo") {
     playerName = generateRandomName();
     localStorage.setItem("toposyerizos-playername", playerName);
+  } else {
+    // Existing user who already had a custom name saved prior to this feature
+    localStorage.setItem("toposyerizos-is-custom-name", "true");
   }
   let playerAvatar = localStorage.getItem("toposyerizos-playeravatar") || "mole";
   const AVATAR_LIST = ["mole", "erizo", "helmet_mole", "disguise_mole", "bucket_mole", "fork_mole", "zombie_mole"];
