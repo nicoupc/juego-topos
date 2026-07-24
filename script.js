@@ -150,8 +150,38 @@
   let mutedMusic = localStorage.getItem(MUSIC_MUTE_KEY) === "1";
   let mutedSFX = localStorage.getItem(SFX_MUTE_KEY) === "1";
   
-  // Profile & Leaderboard Settings
-  const LEADERBOARD_BIN_URL = "https://api.npoint.io/670d03f5f10a160c0d72";
+  // ==========================================================================
+  //  LEADERBOARD BACKEND SEAM
+  //  This object is the ONLY place that knows HOW we talk to the score store.
+  //  To migrate to AWS, swap the internals of these two methods (point them at
+  //  API Gateway / your Lambda) and the rest of the game does not change: it
+  //  only ever calls getScores()/putScores().
+  //  NOTE: today the client does the read-modify-write (getScores + merge +
+  //  putScores) because npoint is a dumb public store. On AWS that merge logic
+  //  moves INTO the Lambda, so the client will just submit its own score.
+  // ==========================================================================
+  const LeaderboardService = {
+    endpoint: "https://api.npoint.io/670d03f5f10a160c0d72",
+
+    async getScores() {
+      const res = await fetchWithRetry(`${this.endpoint}?t=${Date.now()}`);
+      const text = await res.text();
+      const data = JSON.parse(text);
+      const entries = data.scores || [];
+      if (!Array.isArray(entries)) {
+        throw new Error("Invalid scores format from server");
+      }
+      return entries;
+    },
+
+    async putScores(scores) {
+      await fetchWithRetry(this.endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ scores })
+      });
+    }
+  };
   
   let playerId = localStorage.getItem("toposyerizos-playerid");
   if (!playerId) {
@@ -1170,14 +1200,35 @@
         crownHTML = `<span class="leaderboard-crown">👑</span>`;
       }
       
-      row.innerHTML = `
-        <div class="leaderboard-rank ${rankClass}">${rankBadge}${crownHTML}</div>
-        <div class="leaderboard-player">
-          <div class="leaderboard-player-avatar">${getAvatarSVG(avatarPart)}</div>
-          <span class="leaderboard-player-name" title="${namePart}">${namePart}</span>
-        </div>
-        <div class="leaderboard-score">${entry.score}</div>
-      `;
+      // Build the row with DOM nodes so the player name (which comes from an
+      // untrusted shared store) is NEVER parsed as HTML. This closes the
+      // stored-XSS hole: a name like "<img onerror=...>" is shown as text.
+      const rankDiv = document.createElement("div");
+      rankDiv.className = `leaderboard-rank ${rankClass}`;
+      rankDiv.innerHTML = `${rankBadge}${crownHTML}`; // controlled values (rank number/medal + crown)
+
+      const playerDiv = document.createElement("div");
+      playerDiv.className = "leaderboard-player";
+
+      const avatarDiv = document.createElement("div");
+      avatarDiv.className = "leaderboard-player-avatar";
+      avatarDiv.innerHTML = getAvatarSVG(avatarPart); // safe: maps to a fixed avatar set
+
+      const nameSpan = document.createElement("span");
+      nameSpan.className = "leaderboard-player-name";
+      nameSpan.textContent = namePart; // SAFE: user-controlled text, not HTML
+      nameSpan.title = namePart;
+
+      playerDiv.appendChild(avatarDiv);
+      playerDiv.appendChild(nameSpan);
+
+      const scoreDiv = document.createElement("div");
+      scoreDiv.className = "leaderboard-score";
+      scoreDiv.textContent = String(Number(entry.score) || 0); // SAFE: coerced to number
+
+      row.appendChild(rankDiv);
+      row.appendChild(playerDiv);
+      row.appendChild(scoreDiv);
       leaderboardList.appendChild(row);
     }
   }
@@ -1201,20 +1252,7 @@
     }
 
     try {
-      const res = await fetchWithRetry(`${LEADERBOARD_BIN_URL}?t=${Date.now()}`);
-      const text = await res.text();
-      let data;
-      try {
-        data = JSON.parse(text);
-      } catch (parseErr) {
-        throw new Error("Invalid JSON response from server");
-      }
-
-      const entries = data.scores || [];
-      if (!Array.isArray(entries)) {
-        throw new Error("Invalid scores format from server");
-      }
-
+      const entries = await LeaderboardService.getScores();
       localStorage.setItem("toposyerizos-leaderboard-cache", JSON.stringify(entries));
       renderLeaderboard(entries);
     } catch (err) {
@@ -1232,17 +1270,8 @@
       localStorage.setItem("toposyerizos-playername", playerName);
     }
     try {
-      const res = await fetchWithRetry(`${LEADERBOARD_BIN_URL}?t=${Date.now()}`);
-      const text = await res.text();
-      let data;
-      try {
-        data = JSON.parse(text);
-      } catch (parseErr) {
-        throw new Error("Invalid JSON on fetch before submit");
-      }
-      
-      const scoresList = data.scores || [];
-      
+      const scoresList = await LeaderboardService.getScores();
+
       let existingIndex = scoresList.findIndex(s => s.id === playerId);
       if (existingIndex === -1) {
         existingIndex = scoresList.findIndex(s => s.name.trim().toLowerCase() === playerName.trim().toLowerCase() && !s.id);
@@ -1274,14 +1303,8 @@
       localStorage.setItem("toposyerizos-leaderboard-cache", JSON.stringify(topScores));
       renderLeaderboard(topScores);
 
-      await fetchWithRetry(LEADERBOARD_BIN_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ scores: topScores })
-      });
-      
+      await LeaderboardService.putScores(topScores);
+
       console.log("Submitted score to JSON storage successfully!");
     } catch (err) {
       console.error("Error submitting score:", err);
@@ -1309,17 +1332,8 @@
     renderProfileUI();
     
     try {
-      const res = await fetchWithRetry(`${LEADERBOARD_BIN_URL}?t=${Date.now()}`);
-      const text = await res.text();
-      let data;
-      try {
-        data = JSON.parse(text);
-      } catch (parseErr) {
-        throw new Error("Invalid JSON on fetch before profile change");
-      }
-      
-      let scoresList = data.scores || [];
-      
+      let scoresList = await LeaderboardService.getScores();
+
       let entryIndex = scoresList.findIndex(s => s.id === playerId);
       if (entryIndex === -1) {
         entryIndex = scoresList.findIndex(s => s.name.trim().toLowerCase() === oldName.trim().toLowerCase() && !s.id);
@@ -1363,13 +1377,7 @@
         localStorage.setItem("toposyerizos-leaderboard-cache", JSON.stringify(topScores));
         renderLeaderboard(topScores);
 
-        await fetchWithRetry(LEADERBOARD_BIN_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ scores: topScores })
-        });
+        await LeaderboardService.putScores(topScores);
       }
     } catch (e) {
       console.error("Error updating profile in JSON storage:", e);
