@@ -152,19 +152,19 @@
   
   // ==========================================================================
   //  LEADERBOARD BACKEND SEAM
-  //  This object is the ONLY place that knows HOW we talk to the score store.
-  //  To migrate to AWS, swap the internals of these two methods (point them at
-  //  API Gateway / your Lambda) and the rest of the game does not change: it
-  //  only ever calls getScores()/putScores().
-  //  NOTE: today the client does the read-modify-write (getScores + merge +
-  //  putScores) because npoint is a dumb public store. On AWS that merge logic
-  //  moves INTO the Lambda, so the client will just submit its own score.
+  //  Unico punto que sabe COMO habla el juego con el store de puntajes.
+  //  Apunta al backend AWS (API Gateway HTTP -> Lambda -> DynamoDB): la Lambda
+  //  hace el merge / el orden / el tope de score; el cliente solo lee el
+  //  ranking (getScores) o envia SU propia entrada (submitScore).
   // ==========================================================================
   const LeaderboardService = {
-    endpoint: "https://api.npoint.io/670d03f5f10a160c0d72",
+    // Backend AWS: API Gateway (HTTP API) -> Lambda -> DynamoDB.
+    // La Lambda hace el merge, el orden y el tope de score; el cliente solo
+    // pide el ranking (getScores) o envia SU propia entrada (submitScore).
+    endpoint: "https://3nnd1sk5w6.execute-api.us-east-1.amazonaws.com",
 
     async getScores() {
-      const res = await fetchWithRetry(`${this.endpoint}?t=${Date.now()}`);
+      const res = await fetchWithRetry(`${this.endpoint}/scores`);
       const text = await res.text();
       const data = JSON.parse(text);
       const entries = data.scores || [];
@@ -174,11 +174,13 @@
       return entries;
     },
 
-    async putScores(scores) {
-      await fetchWithRetry(this.endpoint, {
+    // Envia UNA entrada {id, name, avatar, score}. La Lambda valida, sanea,
+    // acota el score y solo sube el record si el nuevo supera al guardado.
+    async submitScore(entry) {
+      await fetchWithRetry(`${this.endpoint}/scores`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ scores })
+        body: JSON.stringify(entry)
       });
     }
   };
@@ -1270,42 +1272,16 @@
       localStorage.setItem("toposyerizos-playername", playerName);
     }
     try {
-      const scoresList = await LeaderboardService.getScores();
-
-      let existingIndex = scoresList.findIndex(s => s.id === playerId);
-      if (existingIndex === -1) {
-        existingIndex = scoresList.findIndex(s => s.name.trim().toLowerCase() === playerName.trim().toLowerCase() && !s.id);
-        if (existingIndex !== -1) {
-          scoresList[existingIndex].id = playerId;
-        }
-      }
-      
-      if (existingIndex !== -1) {
-        if (score > scoresList[existingIndex].score) {
-          scoresList[existingIndex].score = score;
-          scoresList[existingIndex].avatar = playerAvatar;
-          scoresList[existingIndex].date = new Date().toLocaleDateString();
-        }
-        scoresList[existingIndex].name = playerName.trim();
-      } else {
-        scoresList.push({
-          id: playerId,
-          name: playerName.trim(),
-          avatar: playerAvatar,
-          score: score,
-          date: new Date().toLocaleDateString()
-        });
-      }
-      
-      scoresList.sort((a, b) => b.score - a.score);
-      const topScores = scoresList.slice(0, 50);
-      
-      localStorage.setItem("toposyerizos-leaderboard-cache", JSON.stringify(topScores));
-      renderLeaderboard(topScores);
-
-      await LeaderboardService.putScores(topScores);
-
-      console.log("Submitted score to JSON storage successfully!");
+      // El cliente solo envia SU entrada; la Lambda decide si supera el record,
+      // sanea el nombre y ordena. Sin read-modify-write => sin condicion de carrera.
+      await LeaderboardService.submitScore({
+        id: playerId,
+        name: playerName.trim(),
+        avatar: playerAvatar,
+        score: score
+      });
+      // Refrescar el ranking desde el servidor (fuente de verdad).
+      await fetchLeaderboard();
     } catch (err) {
       console.error("Error submitting score:", err);
     }
@@ -1319,68 +1295,48 @@
   }
 
   async function changeProfile(newName, newAvatar) {
-    const oldName = playerName;
     const cleanedNewName = newName.trim();
     if (!cleanedNewName) return;
-    
+
     playerName = cleanedNewName;
     playerAvatar = newAvatar;
     localStorage.setItem("toposyerizos-playername", cleanedNewName);
     localStorage.setItem("toposyerizos-playeravatar", newAvatar);
     localStorage.setItem("toposyerizos-is-custom-name", "true");
-    
-    renderProfileUI();
-    
-    try {
-      let scoresList = await LeaderboardService.getScores();
 
-      let entryIndex = scoresList.findIndex(s => s.id === playerId);
-      if (entryIndex === -1) {
-        entryIndex = scoresList.findIndex(s => s.name.trim().toLowerCase() === oldName.trim().toLowerCase() && !s.id);
-        if (entryIndex !== -1) {
-          scoresList[entryIndex].id = playerId;
-        }
-      }
-      
+    renderProfileUI();
+
+    try {
+      // Reconciliar: si mi score en el servidor es mayor que el local, adoptarlo.
       let dbScore = 0;
-      if (entryIndex !== -1) {
-        dbScore = scoresList[entryIndex].score;
-        scoresList[entryIndex].name = cleanedNewName;
-        scoresList[entryIndex].avatar = newAvatar;
+      try {
+        const scores = await LeaderboardService.getScores();
+        const mine = scores.find(s => s.id === playerId);
+        if (mine) dbScore = Number(mine.score) || 0;
+      } catch (e) {
+        console.warn("No se pudo leer el score del servidor, uso el local:", e);
       }
-      
+
       const localRecord = getLocalRecord();
-      const finalScore = Math.max(dbScore, localRecord);
-      
       if (dbScore > localRecord) {
         saveHighscore(dbScore);
         renderProfileUI();
         updateMainHighscoreLabel();
       }
-      
-      if (finalScore > 0) {
-        if (entryIndex !== -1) {
-          scoresList[entryIndex].score = finalScore;
-        } else {
-          scoresList.push({
-            id: playerId,
-            name: cleanedNewName,
-            avatar: newAvatar,
-            score: finalScore,
-            date: new Date().toLocaleDateString()
-          });
-        }
-        
-        scoresList.sort((a, b) => b.score - a.score);
-        const topScores = scoresList.slice(0, 50);
-        
-        localStorage.setItem("toposyerizos-leaderboard-cache", JSON.stringify(topScores));
-        renderLeaderboard(topScores);
+      const finalScore = Math.max(dbScore, localRecord);
 
-        await LeaderboardService.putScores(topScores);
+      // Enviar mi entrada: la Lambda actualiza nombre/avatar y el score si aplica.
+      if (finalScore > 0) {
+        await LeaderboardService.submitScore({
+          id: playerId,
+          name: cleanedNewName,
+          avatar: newAvatar,
+          score: finalScore
+        });
+        await fetchLeaderboard();
       }
     } catch (e) {
-      console.error("Error updating profile in JSON storage:", e);
+      console.error("Error updating profile:", e);
     }
   }
 
